@@ -12,9 +12,10 @@ public static class DbInitializer
         var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<StoreContext>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
+        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
         await context.Database.MigrateAsync();
         await context.Database.EnsureCreatedAsync();
-        await Seeders.Seed(context, userManager);
+        await Seeders.Seed(context, userManager, roleManager);
     }
 }

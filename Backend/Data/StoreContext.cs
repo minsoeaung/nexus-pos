@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data;
 
-public class StoreContext(DbContextOptions options) : IdentityDbContext<User, Role, int>(options)
+public class StoreContext(DbContextOptions options) : IdentityDbContext<AppUser, AppRole, int>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {

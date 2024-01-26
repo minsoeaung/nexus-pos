@@ -6,23 +6,29 @@ namespace Backend.Data;
 
 public static class Seeders
 {
-    private static List<Vendor> Vendors { get; set; }
-    private static List<Category> Categories { get; set; }
-    private static List<Item> Items { get; set; }
+    private static List<Vendor> Vendors { get; set; } = [];
+    private static List<Category> Categories { get; set; } = [];
+    private static List<Item> Items { get; set; } = [];
 
-    public static async Task Seed(StoreContext context, UserManager<User> userManager)
+    public static async Task Seed(StoreContext context,
+        UserManager<AppUser> userManager,
+        RoleManager<AppRole> roleManager)
     {
-        if (!context.Roles.Any())
-        {
-            var super = new Role { Id = 1, Name = "SuperAdmin", NormalizedName = "SUPERADMIN" };
-            var admin = new Role { Id = 2, Name = "Admin", NormalizedName = "ADMIN" };
-            var roles = new List<Role> { super, admin };
-            await context.Roles.AddRangeAsync(roles);
-        }
+        var superAdminRoleExist = await roleManager.RoleExistsAsync("SuperAdmin");
+        if (!superAdminRoleExist)
+            await roleManager.CreateAsync(new AppRole
+            {
+                Id = 1, Name = "SuperAdmin", NormalizedName = "SUPERADMIN", ConcurrencyStamp = Guid.NewGuid().ToString()
+            });
+
+        var adminRoleExist = await roleManager.RoleExistsAsync("Admin");
+        if (!adminRoleExist)
+            await roleManager.CreateAsync(new AppRole
+                { Id = 2, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() });
 
         if (!context.Users.Any())
         {
-            var superUser = new User
+            var superUser = new AppUser
             {
                 Id = 1,
                 UserName = "superadmin",
@@ -30,11 +36,12 @@ public static class Seeders
                 EmailConfirmed = true,
                 NormalizedEmail = "SUPERADMIN@GMAIL.COM",
                 NormalizedUserName = "SUPERADMIN",
+                SecurityStamp = Guid.NewGuid().ToString()
             };
-            await userManager.CreateAsync(superUser, "superadmin");
+            await userManager.CreateAsync(superUser, "password");
             await userManager.AddToRolesAsync(superUser, new List<string> { "SuperAdmin", "Admin" });
 
-            var adminUser = new User
+            var adminUser = new AppUser
             {
                 Id = 2,
                 UserName = "admin",
@@ -42,9 +49,10 @@ public static class Seeders
                 EmailConfirmed = true,
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 NormalizedUserName = "ADMIN",
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
-            await userManager.CreateAsync(adminUser, "admin");
+            await userManager.CreateAsync(adminUser, "password");
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
 
@@ -59,7 +67,7 @@ public static class Seeders
                 .StrictMode(true)
                 .UseSeed(1111)
                 .RuleFor(d => d.Id, f => vendorIds++)
-                .RuleFor(d => d.Name, f => (f.Company.CompanyName() + vendorIds).Replace(",", ""));
+                .RuleFor(d => d.Name, f => (f.Commerce.Product() + vendorIds).Replace(",", ""));
             Vendors = vendorFaker.Generate(vendorNumToSeed);
 
             var categoryIds = 1;
@@ -80,7 +88,8 @@ public static class Seeders
                 .RuleFor(p => p.Stock, f => f.Random.Number(20, 200))
                 .RuleFor(p => p.VendorId, f => f.PickRandom(Vendors).Id)
                 .RuleFor(p => p.CategoryId, f => f.PickRandom(Categories).Id)
-                .RuleFor(p => p.UserId, 2);
+                .RuleFor(p => p.CreatedAt, f => DateTime.UtcNow)
+                .RuleFor(p => p.AppUserId, 2);
             Items = itemFaker.Generate(itemNumToSeed);
 
             await context.Vendors.AddRangeAsync(Vendors);
