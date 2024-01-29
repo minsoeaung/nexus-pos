@@ -1,6 +1,7 @@
 using Backend.Entities;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data;
 
@@ -14,17 +15,17 @@ public static class Seeders
         UserManager<AppUser> userManager,
         RoleManager<AppRole> roleManager)
     {
-        var superAdminRoleExist = await roleManager.RoleExistsAsync("SuperAdmin");
-        if (!superAdminRoleExist)
+        if (!context.Roles.Any())
+        {
             await roleManager.CreateAsync(new AppRole
             {
                 Id = 1, Name = "SuperAdmin", NormalizedName = "SUPERADMIN", ConcurrencyStamp = Guid.NewGuid().ToString()
             });
-
-        var adminRoleExist = await roleManager.RoleExistsAsync("Admin");
-        if (!adminRoleExist)
             await roleManager.CreateAsync(new AppRole
                 { Id = 2, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() });
+
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"AspNetRoles_Id_seq\" restart with 3");
+        }
 
         if (!context.Users.Any())
         {
@@ -54,6 +55,8 @@ public static class Seeders
 
             await userManager.CreateAsync(adminUser, "password");
             await userManager.AddToRoleAsync(adminUser, "Admin");
+
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"AspNetUsers_Id_seq\" restart with 3");
         }
 
         if (!context.Items.Any())
@@ -95,6 +98,10 @@ public static class Seeders
             await context.Vendors.AddRangeAsync(Vendors);
             await context.Categories.AddRangeAsync(Categories);
             await context.Items.AddRangeAsync(Items);
+
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Items_Id_seq\" restart with 51");
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Categories_Id_seq\" restart with 21");
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Vendors_Id_seq\" restart with 21");
         }
 
         await context.SaveChangesAsync();
