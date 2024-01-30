@@ -9,7 +9,5 @@ public class ItemRequest
     [Required] public int CategoryId { get; set; }
     [Required] [Range(0, int.MaxValue)] public int Stock { get; set; }
 
-    [Required]
-    [Range(1, double.PositiveInfinity)]
-    public double Price { get; set; }
+    [Required] [Range(1, double.MaxValue)] public double Price { get; set; }
 }

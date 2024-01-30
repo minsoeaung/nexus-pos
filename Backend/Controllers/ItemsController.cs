@@ -6,6 +6,7 @@ using Backend.Extensions;
 using Backend.RequestHelpers;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,8 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ItemsController(StoreContext storeContext, IMapper mapper) : ControllerBase
+public class ItemsController(StoreContext storeContext, IMapper mapper, UserManager<AppUser> userManager)
+    : ControllerBase
 {
     [HttpGet]
     public async Task<PagedResponse<ItemResponse>> GetItems([FromQuery] ItemsParams itemsParams)
@@ -57,14 +59,38 @@ public class ItemsController(StoreContext storeContext, IMapper mapper) : Contro
         if (item == null)
             return NotFound();
 
+        var category = await storeContext.Categories.FindAsync(dto.CategoryId);
+        if (category is null)
+        {
+            ModelState.AddModelError("categoryId", "The provided categoryId does not exist.");
+            return ValidationProblem();
+        }
+
+        var vendor = await storeContext.Vendors.FindAsync(dto.VendorId);
+        if (vendor is null)
+        {
+            ModelState.AddModelError("vendorId", "The provided vendorId does not exist.");
+            return ValidationProblem();
+        }
+
         item.Name = dto.Name;
-        item.VendorId = dto.VendorId; // Intentionally leave to check if this vendorId exists.
-        item.CategoryId = dto.CategoryId; // Same as above
+        item.VendorId = dto.VendorId;
+        item.Vendor = vendor;
+        item.CategoryId = dto.CategoryId;
+        item.Category = category;
         item.Stock = dto.Stock;
         item.Price = dto.Price;
 
         storeContext.Items.Update(item);
         await storeContext.SaveChangesAsync();
+
+        item.AppUser = new AppUser
+        {
+            Id = item.AppUserId,
+            Email = User.FindFirstValue(ClaimTypes.Email),
+            UserName = User.FindFirstValue(ClaimTypes.Name)
+        };
+
         return mapper.Map<ItemResponse>(item);
     }
 
@@ -78,13 +104,40 @@ public class ItemsController(StoreContext storeContext, IMapper mapper) : Contro
         if (userId <= 0)
             return Unauthorized();
 
+        var category = await storeContext.Categories.FindAsync(dto.CategoryId);
+        if (category is null)
+        {
+            ModelState.AddModelError("categoryId", "The provided categoryId does not exist.");
+            return ValidationProblem();
+        }
+
+        var vendor = await storeContext.Vendors.FindAsync(dto.VendorId);
+        if (vendor is null)
+        {
+            ModelState.AddModelError("vendorId", "The provided vendorId does not exist.");
+            return ValidationProblem();
+        }
+
         var item = mapper.Map<Item>(dto);
         item.AppUserId = userId;
         item.CreatedAt = DateTime.UtcNow;
+        item.Category = category;
+        item.Vendor = vendor;
 
         await storeContext.Items.AddAsync(item);
-        var changes = await storeContext.SaveChangesAsync();
-        return changes > 0 ? NoContent() : BadRequest();
+        await storeContext.SaveChangesAsync();
+
+        item.AppUser = new AppUser
+        {
+            Id = userId,
+            Email = User.FindFirstValue(ClaimTypes.Email),
+            UserName = User.FindFirstValue(ClaimTypes.Name)
+        };
+
+        return CreatedAtAction(
+            nameof(GetItem),
+            new { id = item.Id },
+            mapper.Map<ItemResponse>(item));
     }
 
     [Authorize(Roles = "Admin")]

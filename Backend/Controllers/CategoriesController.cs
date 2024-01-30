@@ -23,7 +23,7 @@ public class CategoriesController(StoreContext storeContext) : BaseApiController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCategory(int id, string name)
+    public async Task<ActionResult<Category>> PutCategory(int id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             return BadRequest();
@@ -35,7 +35,7 @@ public class CategoriesController(StoreContext storeContext) : BaseApiController
         category.Name = name;
         await storeContext.SaveChangesAsync();
 
-        return NoContent();
+        return category;
     }
 
     [HttpPost]

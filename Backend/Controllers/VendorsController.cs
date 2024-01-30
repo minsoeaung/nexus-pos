@@ -23,7 +23,7 @@ public class VendorsController(StoreContext storeContext) : BaseApiController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutVendor(int id, string name)
+    public async Task<ActionResult<Vendor>> PutVendor(int id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             return BadRequest();
@@ -35,7 +35,7 @@ public class VendorsController(StoreContext storeContext) : BaseApiController
         vendor.Name = name;
         await storeContext.SaveChangesAsync();
 
-        return NoContent();
+        return vendor;
     }
 
     [HttpPost]
