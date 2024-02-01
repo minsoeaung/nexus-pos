@@ -1,34 +1,47 @@
-import { Layout, Menu, theme, Typography } from 'antd';
+import { Avatar, Layout, Menu, Space, Typography } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
-import { AppstoreOutlined, DropboxOutlined, ShopOutlined, SolutionOutlined, TeamOutlined } from '@ant-design/icons';
+import {
+  DatabaseOutlined,
+  DropboxOutlined,
+  ShopOutlined,
+  SolutionOutlined,
+  TagOutlined,
+  TeamOutlined,
+} from '@ant-design/icons';
+import { AutoBreadcrumbs } from '../components/AutoBreadcrumbs.tsx';
 
 const { Header, Content, Sider } = Layout;
 
-const headerHeight = 47;
+const headerHeight = 56;
 const siderWidth = 256;
 
 export const RootLayout = () => {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
   return (
     <Layout>
       <Header
         style={{
           position: 'sticky',
           top: 0,
-          zIndex: 1,
+          zIndex: 10,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           height: headerHeight,
-          backgroundColor: '#161616',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          // backgroundColor: '#161616',
+          background: 'transparent',
+          backdropFilter: 'blur(7px)',
+          borderBottom: '1px solid rgba(10, 10, 10, 0.1)',
         }}
       >
-        <Typography style={{ color: 'white' }}>Logo</Typography>
-        <Link to="/login">Login</Link>
+        <b style={{ fontSize: '1.5rem' }}>App name</b>
+        <Space>
+          <Avatar
+            src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
+          />
+          <Typography>Username</Typography>
+        </Space>
       </Header>
       <Layout>
         <Sider
@@ -40,34 +53,61 @@ export const RootLayout = () => {
             left: 0,
             top: 0,
             bottom: 0,
-            marginTop: headerHeight + 10,
+            marginTop: headerHeight,
           }}
         >
           <Menu
             mode="inline"
-            defaultSelectedKeys={['1']}
-            style={{ borderRight: 0, height: '100%' }}
+            defaultSelectedKeys={['dashboard']}
+            defaultOpenKeys={['inventory']}
+            style={{
+              paddingTop: 16,
+              borderRight: '1px solid rgba(10, 10, 10, 0.1)',
+              height: '100%',
+            }}
             items={[
-              { label: 'Products', key: '1', icon: <DropboxOutlined /> },
-              { label: 'Categories', key: '2', icon: <AppstoreOutlined /> },
-              { label: 'Brands', key: '3', icon: <ShopOutlined /> },
+              {
+                label: <Link to="/">Dashboard</Link>, key: 'dashboard', icon: <SolutionOutlined />,
+              },
+              {
+                label: 'Inventory',
+                key: 'inventory',
+                icon: <DatabaseOutlined />,
+                children: [
+                  {
+                    label: <Link to="/products">Products</Link>,
+                    key: 'products',
+                    icon: <DropboxOutlined />,
+                  },
+                  {
+                    label: <Link to="/categories">Categories</Link>,
+                    key: 'categories',
+                    icon: <TagOutlined />,
+                  },
+                  {
+                    label: <Link to="/vendor">Vendors</Link>,
+                    key: 'vendors',
+                    icon: <ShopOutlined />,
+                  }],
+              },
               {
                 type: 'divider',
               },
               { label: 'Admins', key: '4', icon: <SolutionOutlined /> },
+              {
+                type: 'divider',
+              },
               { label: 'Customers', key: '5', icon: <TeamOutlined /> },
             ]}
           />
         </Sider>
-        <Layout style={{ marginLeft: siderWidth, padding: 20, backgroundColor: '#CDDAE7' }}>
+        <Layout style={{ marginLeft: siderWidth, padding: 20, backgroundColor: '#f4f4f4' }}>
           <Content
             style={{
-              padding: 20,
               minHeight: '100vh',
-              background: '#F4F4F4',
-              borderRadius: borderRadiusLG,
             }}
           >
+            <AutoBreadcrumbs />
             <Outlet />
           </Content>
         </Layout>

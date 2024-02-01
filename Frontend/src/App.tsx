@@ -23,7 +23,7 @@ function App() {
       <ConfigProvider
         theme={{
           token: {
-            borderRadius: 2,
+            // borderRadius: 2,
           },
         }}
       >
