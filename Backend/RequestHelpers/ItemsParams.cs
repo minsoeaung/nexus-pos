@@ -7,5 +7,5 @@ public class ItemsParams
     public string? Vendors { get; set; }
     public string? Categories { get; set; }
     public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 25;
+    public int PageSize { get; set; } = 10;
 }

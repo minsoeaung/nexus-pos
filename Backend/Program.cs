@@ -72,12 +72,11 @@ if (app.Environment.IsDevelopment())
         options
             .WithOrigins("https://localhost:5173", "http://localhost:5173")
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
     });
 }
 
-app.MapIdentityApi<AppUser>();
+app.MapGroup("/api/accounts").MapIdentityApi<AppUser>();
 
 app.MapControllers();
 

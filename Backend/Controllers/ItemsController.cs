@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class ItemsController(StoreContext storeContext, IMapper mapper, UserManager<AppUser> userManager)
@@ -51,7 +52,6 @@ public class ItemsController(StoreContext storeContext, IMapper mapper, UserMana
         return item == null ? NotFound() : mapper.Map<ItemResponse>(item);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<ItemResponse>> UpdateItem(int id, ItemRequest dto)
     {
@@ -94,9 +94,8 @@ public class ItemsController(StoreContext storeContext, IMapper mapper, UserMana
         return mapper.Map<ItemResponse>(item);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> CreateItem([FromForm] ItemRequest dto)
+    public async Task<ActionResult<ItemResponse>> CreateItem(ItemRequest dto)
     {
         var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
         int.TryParse(userIdStr, out var userId);
@@ -140,7 +139,6 @@ public class ItemsController(StoreContext storeContext, IMapper mapper, UserMana
             mapper.Map<ItemResponse>(item));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteItem(int id)
     {
