@@ -3,7 +3,7 @@ import { ItemDto } from '../types/ItemDto.ts';
 import { useQuery } from 'react-query';
 import { ApiClient } from '../api/apiClient.ts';
 import { Category, Vendor } from '../types/Item.ts';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { ErrorAlert } from './ErrorAlert.tsx';
 import { ApiError } from '../types/ApiError.ts';
 
@@ -17,7 +17,7 @@ type ItemModalProps = {
   error: ApiError | undefined | null
 }
 
-export const ItemModal = ({ type, open, data, onSubmit, onCancel, loading, error }: ItemModalProps) => {
+export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, error }: ItemModalProps) => {
   const [form] = Form.useForm();
 
   const { data: categories } = useQuery({
@@ -42,11 +42,10 @@ export const ItemModal = ({ type, open, data, onSubmit, onCancel, loading, error
   };
 
   useEffect(() => {
-    if (open) {
-      data && form.setFieldsValue(data);
-    } else {
+    if (open && data)
+      form.setFieldsValue(data);
+    else
       form.resetFields();
-    }
   }, [open]);
 
   return (
@@ -62,7 +61,6 @@ export const ItemModal = ({ type, open, data, onSubmit, onCancel, loading, error
       <Form
         form={form}
         layout="vertical"
-        initialValues={data}
         autoComplete="off"
       >
         <Form.Item<ItemDto>
@@ -123,4 +121,4 @@ export const ItemModal = ({ type, open, data, onSubmit, onCancel, loading, error
       <br />
     </Modal>
   );
-};
+});

@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ApiClient } from '../api/apiClient.ts';
 import { PagedResponse } from '../types/PagedResponse.ts';
 import { Category, Item, Vendor } from '../types/Item.ts';
-import { useMemo, useRef, useState } from 'react';
+import { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react';
 import { ItemModal } from '../components/ItemModal.tsx';
 import { ItemDto } from '../types/ItemDto.ts';
 import Title from 'antd/es/typography/Title';
@@ -25,7 +25,7 @@ type ItemModalBasicProps = {
   data: ItemDto | undefined,
 }
 
-export const Products = () => {
+export const Products: FunctionComponent = () => {
 
   const [params, setParams] = useSearchParams();
   const [modalProps, setModalProps] = useState<ItemModalBasicProps>({
@@ -153,6 +153,20 @@ export const Products = () => {
         render: (_, record) => <p>{record.category.name}</p>,
       },
       {
+        title: 'Created by',
+        dataIndex: 'admin',
+        key: 'admin',
+        width: '15%',
+        render: (_, record) => <p>{record.admin.userName}</p>,
+      },
+      {
+        title: 'Create date',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: '15%',
+        render: (_, record) => <p>{new Date(record.createdAt).toLocaleDateString('en-GB')}</p>,
+      },
+      {
         title: 'Options',
         key: 'options',
         fixed: 'right',
@@ -198,7 +212,7 @@ export const Products = () => {
     return columns;
   }, [categories, vendors]);
 
-  const handleTableChange: TableProps<Item>['onChange'] = (pagination, filters, sorter) => {
+  const handleTableChange = useCallback<NonNullable<TableProps<Item>['onChange']>>((pagination, filters, sorter) => {
     // Paginate
     params.set('pageNumber', String(pagination.current));
     params.set('pageSize', String(pagination.pageSize));
@@ -234,7 +248,7 @@ export const Products = () => {
     }
 
     setParams(params);
-  };
+  }, []);
 
   const onSearch: SearchProps['onSearch'] = (value) => {
     const searchTerm = value.trim();
@@ -246,6 +260,27 @@ export const Products = () => {
     setParams(params);
   };
 
+  const handleModalSubmit = useCallback(async (data: ItemDto) => {
+    if (!data) return;
+
+    if (modalProps.type === 'create') {
+      await createProductMutation.mutateAsync(data);
+    } else {
+      await updateProductMutation.mutateAsync({
+        data,
+        id: updatingProductId.current,
+      });
+    }
+  }, [modalProps.type]);
+
+  const handleModalCancel = useCallback(() => {
+    setModalProps({
+      type: 'create',
+      open: false,
+      data: undefined,
+    });
+  }, []);
+
   return (
     <section>
       <Title level={3}>Products</Title>
@@ -255,26 +290,31 @@ export const Products = () => {
           borderBottom: 'none',
         }}
         extra={
-          data && (
-            <Space>
-              <Search allowClear placeholder="Search products..." onSearch={onSearch} style={{ width: 200 }} />
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setModalProps({ ...modalProps, open: true })}
-              >
-                New
-              </Button>
-              <Button
-                type="text"
-                icon={<RedoOutlined />}
-                onClick={() => refetch()}
-              />
-            </Space>
-          )
+          <Space>
+            <Search allowClear placeholder="Search products..." onSearch={onSearch} style={{ width: 200 }} />
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setModalProps({
+                  type: 'create',
+                  data: undefined,
+                  open: true,
+                });
+              }}
+            >
+              New
+            </Button>
+            <Button
+              type="text"
+              icon={<RedoOutlined />}
+              onClick={() => refetch()}
+            />
+          </Space>
         }
       >
         <Table
+          bordered
           size="small"
           loading={isLoading || isFetching}
           columns={columns}
@@ -289,7 +329,6 @@ export const Products = () => {
             showSizeChanger: true,
             showTotal: (total) => `Total ${total} items`,
           }}
-
           onChange={handleTableChange}
         />
       </Card>
@@ -297,25 +336,8 @@ export const Products = () => {
         type={modalProps.type}
         open={modalProps.open}
         data={modalProps.data}
-        onSubmit={async (data) => {
-          if (!data) return;
-
-          if (modalProps.type === 'create') {
-            await createProductMutation.mutateAsync(data);
-          } else {
-            await updateProductMutation.mutateAsync({
-              data,
-              id: updatingProductId.current,
-            });
-          }
-        }}
-        onCancel={() => {
-          setModalProps({
-            type: 'create',
-            open: false,
-            data: undefined,
-          });
-        }}
+        onSubmit={handleModalSubmit}
+        onCancel={handleModalCancel}
         loading={createProductMutation.isLoading || updateProductMutation.isLoading}
         error={(createProductMutation.error || updateProductMutation.error) as ApiError}
       />
