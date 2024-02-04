@@ -1,5 +1,5 @@
 import { headerHeight } from './AppHeader.tsx';
-import { Menu, MenuProps } from 'antd';
+import { Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import {
   DashboardOutlined,
@@ -8,23 +8,16 @@ import {
   ShopOutlined,
   SolutionOutlined,
   TagOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 
 export const siderWidth = 256;
 
 export const AppSider = memo(() => {
+
   const location = useLocation();
-
   const pathname = location.pathname.replace(/\/+$/, '');
-
-  const [selectedKeys, setSelectedKeys] = useState([['', '/'].includes(pathname) ? '/dashboard' : pathname]);
-
-  const handleSelect: MenuProps['onSelect'] = ({ key }) => {
-    setSelectedKeys([key]);
-  };
 
   return (
     <Sider
@@ -41,8 +34,7 @@ export const AppSider = memo(() => {
     >
       <Menu
         mode="inline"
-        selectedKeys={selectedKeys}
-        onSelect={handleSelect}
+        selectedKeys={[['', '/'].includes(pathname) ? '/' : pathname]}
         defaultOpenKeys={['/inventory']}
         style={{
           paddingTop: 16,
@@ -51,7 +43,7 @@ export const AppSider = memo(() => {
         }}
         items={[
           {
-            label: <Link to="/">Dashboard</Link>, key: '/dashboard', icon: <DashboardOutlined />,
+            label: <Link to="/">Dashboard</Link>, key: '/', icon: <DashboardOutlined />,
           },
           {
             label: 'Inventory',
@@ -77,11 +69,10 @@ export const AppSider = memo(() => {
           {
             type: 'divider',
           },
-          { label: 'Admins', key: '/admins', icon: <SolutionOutlined /> },
+          { label: <Link to="/admins">Admins</Link>, key: '/admins', icon: <SolutionOutlined /> },
           {
             type: 'divider',
           },
-          { label: 'Customers', key: '/customers', icon: <TeamOutlined /> },
         ]}
       />
     </Sider>

@@ -1,11 +1,12 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AccessTokenResponse } from '../types/AccessTokenResponse.ts';
+import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
+import {AccessTokenResponse} from '../types/AccessTokenResponse.ts';
 
 const authRequestInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('accessToken');
-  if (token) {
+
+  if (token)
     config.headers.Authorization = `Bearer ${token}`;
-  }
+
   return config;
 };
 
@@ -37,7 +38,7 @@ ApiClient.interceptors.response.use(
       // Very important to return a promise, otherwise react-query get error before this interceptor finished
       return new Promise((resolve, reject) => {
         axios<never, AxiosResponse<AccessTokenResponse>>({
-          method: 'GET',
+          method: 'POST',
           url: `${import.meta.env.VITE_ROOT_URL}api/accounts/refresh`,
           withCredentials: true,
           headers: {

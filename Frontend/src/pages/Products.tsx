@@ -8,7 +8,7 @@ import { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react
 import { ItemModal } from '../components/ItemModal.tsx';
 import { ItemDto } from '../types/ItemDto.ts';
 import Title from 'antd/es/typography/Title';
-import { PlusOutlined, RedoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, RedoOutlined } from '@ant-design/icons';
 import { ApiError } from '../types/ApiError.ts';
 import { SearchProps } from 'antd/es/input';
 
@@ -25,7 +25,7 @@ type ItemModalBasicProps = {
   data: ItemDto | undefined,
 }
 
-export const Products: FunctionComponent = () => {
+const Products: FunctionComponent = () => {
 
   const [params, setParams] = useSearchParams();
   const [modalProps, setModalProps] = useState<ItemModalBasicProps>({
@@ -188,6 +188,8 @@ export const Products: FunctionComponent = () => {
                   },
                 });
               }}
+              icon={<EditOutlined />}
+              size="small"
             >
               Edit
             </Button>
@@ -202,7 +204,7 @@ export const Products: FunctionComponent = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button danger type="link">Delete</Button>
+              <Button danger type="link" icon={<DeleteOutlined />} size="small">Delete</Button>
             </Popconfirm>
           </Space>
         ),
@@ -344,3 +346,5 @@ export const Products: FunctionComponent = () => {
     </section>
   );
 };
+
+export default Products;

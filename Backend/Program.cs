@@ -67,14 +67,20 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
     app.UseCors(options =>
     {
         options
             .WithOrigins("https://localhost:5173", "http://localhost:5173")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 }
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapGroup("/api/accounts").MapIdentityApi<AppUser>();
 

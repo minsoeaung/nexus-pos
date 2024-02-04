@@ -26,7 +26,7 @@ export const GlobalLoading = ({ spinning, fullScreen }: Props) => {
   const hiddenStyles: CSSProperties = !spinning ? {
     'zIndex': '-1',
     'opacity': '0',
-    'transition': 'opacity 1s ease 0.5s, z-index 0.1s ease 1.5s',
+    'transition': 'opacity 1s ease 0.3s, z-index 0.1s ease 1.3s',
   } : {};
 
   const fullScreenStyles: CSSProperties = fullScreen ? {
