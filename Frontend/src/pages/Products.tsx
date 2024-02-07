@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Input, message, Popconfirm, Space, Table, TableProps } from 'antd';
+import { Badge, Button, Card, Input, message, Popconfirm, Space, Table, TableProps, Tag } from 'antd';
 import { useMutation, useQuery } from 'react-query';
 import { useSearchParams } from 'react-router-dom';
 import { ApiClient } from '../api/apiClient.ts';
@@ -8,7 +8,7 @@ import { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react
 import { ItemModal } from '../components/ItemModal.tsx';
 import { ItemDto } from '../types/ItemDto.ts';
 import Title from 'antd/es/typography/Title';
-import { DeleteOutlined, EditOutlined, PlusOutlined, RedoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, RedoOutlined, StopOutlined, TagOutlined } from '@ant-design/icons';
 import { ApiError } from '../types/ApiError.ts';
 import { SearchProps } from 'antd/es/input';
 
@@ -131,8 +131,10 @@ const Products: FunctionComponent = () => {
         dataIndex: 'price',
         key: 'price',
         sorter: true,
+        align: 'right',
         width: '10%',
-        render: (_, record) => <p>{USDollar.format(record.price)}</p>,
+        render: (_, record) => <p
+          style={{ marginRight: '10px', letterSpacing: 'px' }}>{USDollar.format(record.price)}</p>,
       },
       {
         title: 'Vendor',
@@ -150,14 +152,16 @@ const Products: FunctionComponent = () => {
         width: '15%',
         filters: categories ? categories.map(v => ({ text: v.name, value: v.name })) : [],
         defaultFilteredValue: params.get('categories') ? params.get('categories')!.split(',') : [],
-        render: (_, record) => <p>{record.category.name}</p>,
+        render: (_, record) => <Space><TagOutlined />{record.category.name}</Space>,
       },
       {
-        title: 'Created by',
-        dataIndex: 'admin',
-        key: 'admin',
+        title: 'Added by',
+        dataIndex: 'createdBy',
+        key: 'createdBy',
         width: '15%',
-        render: (_, record) => <p>{record.admin.userName}</p>,
+        render: (_, record) => <Tag
+          color={record.createdBy.suspend ? 'error' : 'processing'}
+          icon={record.createdBy.suspend ? <StopOutlined /> : null}>{record.createdBy.userName}</Tag>,
       },
       {
         title: 'Create date',
@@ -308,7 +312,6 @@ const Products: FunctionComponent = () => {
               New
             </Button>
             <Button
-              type="text"
               icon={<RedoOutlined />}
               onClick={() => refetch()}
             />

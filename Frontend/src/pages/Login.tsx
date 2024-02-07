@@ -1,7 +1,9 @@
-import {Alert, Button, Form, Input} from 'antd';
-import {useMutation} from 'react-query';
-import {useAuth} from '../context/AuthContext.tsx';
-import {useNavigate} from 'react-router-dom';
+import { Alert, Button, Form, Input } from 'antd';
+import { useMutation } from 'react-query';
+import { useAuth } from '../context/AuthContext.tsx';
+import { Link, useNavigate } from 'react-router-dom';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { ApiError } from '../types/ApiError.ts';
 
 type FieldType = {
   username: string;
@@ -14,7 +16,7 @@ type LoginRequest = {
 }
 
 export const Login = () => {
-  const {login} = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
@@ -52,20 +54,21 @@ export const Login = () => {
         <Form.Item<FieldType>
           label="Username"
           name="username"
-          rules={[{required: true, message: 'Please input your username!'}]}
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input placeholder="Username"/>
+          <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
         </Form.Item>
-
         <Form.Item<FieldType>
           label="Password"
           name="password"
-          rules={[{required: true, message: 'Please input your password!'}]}
+          rules={[{ required: true, message: 'Please input your password!' }]}
+          style={{ marginBottom: 0 }}
         >
-          <Input.Password placeholder="Password"/>
+          <Input type="password" prefix={<LockOutlined className="site-form-item-icon" />} placeholder="Password" />
         </Form.Item>
-
-        <br/>
+        <Form.Item style={{ marginBottom: 12 }}>
+          <Link to="/forgot-password" style={{ float: 'right' }}>Forgot password?</Link>
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" block loading={loginMutation.isLoading}>
             Login
@@ -73,8 +76,14 @@ export const Login = () => {
         </Form.Item>
       </Form>
 
+
+      {/* detail: NotAllowed -> EmailConfirmed false */}
+      {/* detail: Failed -> Invalid credentials */}
+
       {loginMutation.isError && (
-        <Alert message="The user name or password is incorrect." type="error"/>
+        <Alert
+          message={(loginMutation.error as ApiError).status === 403 ? 'Your account has been suspended.' : 'The user name or password is incorrect.'}
+          type="error" />
       )}
     </div>
   );

@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Bogus" Version="35.4.0" />
         <PackageReference Include="ErrorOr" Version="1.9.0" />
+        <PackageReference Include="MailKit" Version="4.3.0" />
         <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />

@@ -1,15 +1,18 @@
-using System.Text.Json.Serialization;
+using Backend.Configs;
 using Backend.Data;
 using Backend.Entities;
 using Backend.Extensions;
+using Backend.Middlewares;
+using Backend.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -42,6 +45,9 @@ builder.Services.AddDbContext<StoreContext>(opt => opt.UseNpgsql(builder.Configu
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<MailConfig>(builder.Configuration.GetSection("Mail"));
+
 builder.Services.AddIdentityApiEndpoints<AppUser>(options =>
     {
         options.Password.RequiredLength = 6;
@@ -50,12 +56,15 @@ builder.Services.AddIdentityApiEndpoints<AppUser>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
 
+        options.SignIn.RequireConfirmedEmail = false;
+
         options.User.RequireUniqueEmail = true;
         options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
     })
     .AddRoles<AppRole>()
-    .AddEntityFrameworkStores<StoreContext>();
+    .AddEntityFrameworkStores<StoreContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddMappings();
 
@@ -78,11 +87,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapGroup("/api/accounts").MapIdentityApi<AppUser>();
+
 app.UseAuthentication();
 
-app.UseAuthorization();
+app.UseSuspendCheck();
 
-app.MapGroup("/api/accounts").MapIdentityApi<AppUser>();
+app.UseAuthorization();
 
 app.MapControllers();
 

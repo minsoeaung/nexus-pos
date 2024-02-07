@@ -1,5 +1,3 @@
-import { Admin } from './Admin.ts';
-
 export type Item = {
   id: number;
   name: string;
@@ -7,7 +5,12 @@ export type Item = {
   category: Category;
   stock: number;
   price: number;
-  admin: Admin;
+  createdBy: {
+    id: number;
+    userName: string;
+    email: string;
+    suspend: boolean;
+  };
   createdAt: string;
 }
 

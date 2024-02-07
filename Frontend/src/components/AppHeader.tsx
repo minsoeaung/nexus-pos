@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Dropdown, MenuProps, Space, Typography } from 'antd';
+import { Dropdown, MenuProps, Space, Typography } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import { useAuth } from '../context/AuthContext.tsx';
-import { ControlOutlined, LogoutOutlined } from '@ant-design/icons';
+import { DownOutlined, KeyOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useQueryClient } from 'react-query';
 import { memo } from 'react';
 
@@ -15,9 +15,14 @@ export const AppHeader = memo(() => {
 
   const items: MenuProps['items'] = [
     {
-      label: <Link to="/manage-account">Account settings</Link>,
-      icon: <ControlOutlined />,
-      key: '0',
+      label: <Link to="/account">Account</Link>,
+      icon: <UserOutlined />,
+      key: 'account',
+    },
+    {
+      label: <Link to="/reset-password">Reset password</Link>,
+      icon: <KeyOutlined />,
+      key: 'reset-password',
     },
     {
       type: 'divider',
@@ -26,7 +31,7 @@ export const AppHeader = memo(() => {
       label: 'Logout',
       icon: <LogoutOutlined />,
       danger: true,
-      key: '1',
+      key: 'logout',
       onClick: () => {
         queryClient.clear();
         logout();
@@ -57,13 +62,11 @@ export const AppHeader = memo(() => {
         App name
       </Link>
       {user && (
-        <Dropdown menu={{ items }} trigger={['click']}>
+        <Dropdown menu={{ items }} trigger={['click']} arrow>
           <a onClick={(e) => e.preventDefault()}>
             <Space>
-              <Avatar
-                src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
-              />
-              <Typography>{user.userName}</Typography>
+              <Typography>Hello {user.userName}</Typography>
+              <Typography><DownOutlined /></Typography>
             </Space>
           </a>
         </Dropdown>

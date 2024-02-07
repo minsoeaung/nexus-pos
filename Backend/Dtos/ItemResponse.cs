@@ -10,11 +10,11 @@ public class ItemResponse
     public Category Category { get; set; }
     public int Stock { get; set; }
     public double Price { get; set; }
-    public Admin Admin { get; set; }
+    public CreatedBy CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 
-public class Admin
+public class CreatedBy
 {
     public int Id { get; set; }
     public string UserName { get; set; }

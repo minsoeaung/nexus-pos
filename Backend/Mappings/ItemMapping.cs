@@ -12,7 +12,7 @@ public class ItemMapping : IRegister
         config.NewConfig<ItemRequest, Item>();
 
         config.NewConfig<Item, ItemResponse>()
-            .Map(dest => dest.Admin, src => src.AppUser);
+            .Map(dest => dest.CreatedBy, src => src.AppUser);
 
         config.ForType<PagedList<Item>, IEnumerable<ItemResponse>>()
             .Map(dest => dest, src => src.AsEnumerable().Adapt<IEnumerable<ItemResponse>>());

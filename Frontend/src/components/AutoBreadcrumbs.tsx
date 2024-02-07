@@ -15,10 +15,6 @@ export const AutoBreadcrumbs = () => {
     .map((match) => match.handle.crumb(match.data));
 
   return (
-    <Breadcrumb>
-      {crumbs.map((crumb, index) => (
-        <Breadcrumb.Item key={index}>{crumb}</Breadcrumb.Item>
-      ))}
-    </Breadcrumb>
+    <Breadcrumb items={crumbs.map((crumb) => ({ title: crumb }))} />
   );
 };

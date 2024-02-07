@@ -4,14 +4,26 @@ import { Login } from './Login.tsx';
 import { Dashboard } from './Dashboard.tsx';
 import { NotFound } from './NotFound.tsx';
 import { Space } from 'antd';
-import { DashboardOutlined, DropboxOutlined, ShopOutlined, SolutionOutlined, TagOutlined } from '@ant-design/icons';
+import {
+  DashboardOutlined,
+  DropboxOutlined,
+  KeyOutlined,
+  ShopOutlined,
+  SolutionOutlined,
+  TagOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { ProductDetail } from './ProductDetail.tsx';
 import { lazy } from 'react';
+import ForgotPassword from './ForgotPassword.tsx';
 
 const Categories = lazy(() => import('./Categories.tsx'));
 const Vendors = lazy(() => import('./Vendors.tsx'));
 const Admins = lazy(() => import('./Admins.tsx'));
 const Products = lazy(() => import('./Products.tsx'));
+const ResetPassword = lazy(() => import('./ResetPassword.tsx'));
+const Account = lazy(() => import('./Account.tsx'));
+
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +66,20 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: 'reset-password',
+        element: <ResetPassword />,
+        handle: {
+          crumb: () => <Link to="/reset-password"><Space><KeyOutlined />Reset password</Space></Link>,
+        },
+      },
+      {
+        path: 'account',
+        element: <Account />,
+        handle: {
+          crumb: () => <Link to="/account"><Space><UserOutlined />Account</Space></Link>,
+        },
+      },
+      {
         path: 'products/:id',
         element: <ProductDetail />,
         handle: {
@@ -69,5 +95,9 @@ export const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: 'forgot-password',
+    element: <ForgotPassword />,
   },
 ]);

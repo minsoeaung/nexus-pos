@@ -1,12 +1,12 @@
 import { useLocalStorage } from '../hooks/useLocalStorage.ts';
-import { Admin } from '../types/Admin.ts';
+import { AppUser } from '../types/AppUser.ts';
 import { createContext, ReactNode, useContext } from 'react';
 import { ApiClient } from '../api/apiClient.ts';
 import { LoginResponse } from '../types/LoginResponse.ts';
 
 interface IAuthContext {
-  user: Admin | null;
-  setUser: (user: Admin | null) => void;
+  user: AppUser | null;
+  setUser: (user: AppUser | null) => void;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -22,7 +22,7 @@ const AuthContext = createContext<IAuthContext>({
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useLocalStorage<Admin | null>('currentUser', null);
+  const [user, setUser] = useLocalStorage<AppUser | null>('currentUser', null);
 
   const login = async (userName: string, password: string) => {
     // IdentityEndpoints has "email" field, but it is actually a username.

@@ -1,5 +1,5 @@
-import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
-import {AccessTokenResponse} from '../types/AccessTokenResponse.ts';
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { AccessTokenResponse } from '../types/AccessTokenResponse.ts';
 
 const authRequestInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('accessToken');
@@ -31,8 +31,6 @@ ApiClient.interceptors.response.use(
     if (RoutesShouldNotRefresh.includes(originalUrl)) {
       return Promise.reject(error?.response?.data);
     }
-
-    console.log('ERROR RESPONSE', error);
 
     if (error.response?.status === 401) {
       // Very important to return a promise, otherwise react-query get error before this interceptor finished
