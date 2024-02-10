@@ -43,7 +43,7 @@ jobs:
 
     - name: Publish .NET app
       run: |
-        cd API
+        cd Backend
         dotnet publish -c Release
         cd ..
 
@@ -53,7 +53,7 @@ jobs:
         host: ${{ secrets.LIGHTSAIL_IP }}
         username: ${{ secrets.LIGHTSAIL_USERNAME }}
         key: ${{ secrets.LIGHTSAIL_KEY }}
-        source: "API/bin/Release/net8.0/publish/"
+        source: "Backend/bin/Release/net8.0/publish/"
         target: "/var/www/dbms-pj/"
         overwrite: true
 
