@@ -61,9 +61,9 @@ public static class Seeders
 
         if (!context.Items.Any())
         {
-            const int itemNumToSeed = 50;
-            const int vendorNumToSeed = 20;
-            const int categoryNumToSeed = 20;
+            const int itemNumToSeed = 10;
+            const int vendorNumToSeed = 5;
+            const int categoryNumToSeed = 5;
 
             var vendorIds = 1;
             var vendorFaker = new Faker<Vendor>()
@@ -99,9 +99,9 @@ public static class Seeders
             await context.Categories.AddRangeAsync(Categories);
             await context.Items.AddRangeAsync(Items);
 
-            await context.Database.ExecuteSqlRawAsync("alter sequence \"Items_Id_seq\" restart with 51");
-            await context.Database.ExecuteSqlRawAsync("alter sequence \"Categories_Id_seq\" restart with 21");
-            await context.Database.ExecuteSqlRawAsync("alter sequence \"Vendors_Id_seq\" restart with 21");
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Items_Id_seq\" restart with 11");
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Categories_Id_seq\" restart with 6");
+            await context.Database.ExecuteSqlRawAsync("alter sequence \"Vendors_Id_seq\" restart with 6");
         }
 
         await context.SaveChangesAsync();
