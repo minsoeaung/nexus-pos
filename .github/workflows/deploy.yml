@@ -34,7 +34,7 @@ jobs:
     - name: App Settings Variable Substitution for .NET
       uses: microsoft/variable-substitution@v1
       with:
-        files: 'API/appsettings.json'
+        files: 'Backend/appsettings.json'
       env:
         Psql.connectionString: ${{ secrets.PSQL_CONNECTIONSTRING }}
         Mail.Mail: ${{ secrets.MAIL_ID }}
