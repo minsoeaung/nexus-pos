@@ -1,4 +1,5 @@
 using Backend.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,10 @@ public class StoreContext(DbContextOptions options) : IdentityDbContext<AppUser,
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<AppUser>().ToTable("Users");
+        builder.Entity<AppRole>().ToTable("Roles");
+        builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
     }
 
     public DbSet<Category> Categories => Set<Category>();

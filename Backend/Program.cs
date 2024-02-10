@@ -80,12 +80,15 @@ if (app.Environment.IsDevelopment())
     app.UseCors(options =>
     {
         options
-            .WithOrigins("https://localhost:5173", "http://localhost:5173")
+            .WithOrigins("https://localhost:3000", "http://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 }
+
+// For react spa build
+app.UseStaticFiles();
 
 app.MapGroup("/api/accounts").MapIdentityApi<AppUser>();
 
@@ -96,6 +99,9 @@ app.UseSuspendCheck();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// For react spa build
+app.MapFallbackToFile("index.html");
 
 app.CreateDbIfNotExistsAndSeed();
 

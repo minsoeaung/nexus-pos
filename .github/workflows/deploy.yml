@@ -1,0 +1,69 @@
+name: Deploy to Lightsail
+
+on:
+  push:
+    branches: [ production ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.16.0'
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3.2.0
+      with:
+        dotnet-version: '8.0'
+
+    - name: Install npm dependencies and build client app
+      env:
+        VITE_ROOT_URL: '/'
+      run: |
+        cd Frontend
+        npm install
+        npm run build
+        cd ..
+
+    - name: App Settings Variable Substitution for .NET
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: 'API/appsettings.json'
+      env:
+        Psql.connectionString: ${{ secrets.PSQL_CONNECTIONSTRING }}
+        Mail.Mail: ${{ secrets.MAIL_ID }}
+        Mail.DisplayName: ${{ secrets.MAIL_DISPLAY_NAME }}
+        Mail.Password: ${{ secrets.MAIL_PASSWORD }}
+
+    - name: Publish .NET app
+      run: |
+        cd API
+        dotnet publish -c Release
+        cd ..
+
+    - name: Copy files to Lightsail instance
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.LIGHTSAIL_IP }}
+        username: ${{ secrets.LIGHTSAIL_USERNAME }}
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        source: "API/bin/Release/net8.0/publish/"
+        target: "/var/www/dbms-pj/"
+        overwrite: true
+
+    - name: Restart server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.LIGHTSAIL_IP }}
+        username: ${{ secrets.LIGHTSAIL_USERNAME }}
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        script: |
+          sudo systemctl restart dbmspj.service
+
+
