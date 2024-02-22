@@ -20,6 +20,11 @@ const Admins = () => {
     queryFn: async () => await ApiClient.get<never, AppUser[]>(`api/Accounts/admins`),
   });
 
+  const { data: me } = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => await ApiClient.get<never, AppUser>('api/accounts/me'),
+  });
+
   const toggleSuspendMutation = useMutation({
     mutationFn: async (id: number) => await ApiClient.post<never, never>(`api/accounts/admins/toggle-suspend?id=${id}`),
     onSuccess: () => {
@@ -101,12 +106,14 @@ const Admins = () => {
         key: 'options',
         fixed: 'right',
         render: (_, record) => (
-          record.suspend ? (
-            <Button onClick={() => suspendAdmin(record.id)} type="link" icon={<CheckOutlined />}
-                    size="small">Reactivate</Button>
-          ) : (
-            <Button onClick={() => suspendAdmin(record.id)} type="link" icon={<StopOutlined />}
-                    size="small">Suspend</Button>
+          me && me.id !== record.id && (
+            record.suspend ? (
+              <Button onClick={() => suspendAdmin(record.id)} type="link" icon={<CheckOutlined />}
+                      size="small">Reactivate</Button>
+            ) : (
+              <Button onClick={() => suspendAdmin(record.id)} type="link" icon={<StopOutlined />}
+                      size="small">Suspend</Button>
+            )
           )
         ),
       },

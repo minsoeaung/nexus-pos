@@ -2,12 +2,14 @@ import { headerHeight } from './AppHeader.tsx';
 import { Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import {
+  AppstoreOutlined,
   DashboardOutlined,
   DatabaseOutlined,
   DropboxOutlined,
+  HistoryOutlined,
   ShopOutlined,
+  ShoppingCartOutlined,
   SolutionOutlined,
-  TagOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { memo } from 'react';
@@ -46,6 +48,15 @@ export const AppSider = memo(() => {
             label: <Link to="/">Dashboard</Link>, key: '/', icon: <DashboardOutlined />,
           },
           {
+            label: <Link to="/sales">Sales</Link>, key: '/sales', icon: <ShoppingCartOutlined />,
+          },
+          {
+            label: <Link to="/sales-history">Sales History</Link>, key: '/sales-history', icon: <HistoryOutlined />,
+          },
+          {
+            type: 'divider',
+          },
+          {
             label: 'Inventory',
             key: '/inventory',
             icon: <DatabaseOutlined />,
@@ -58,7 +69,7 @@ export const AppSider = memo(() => {
               {
                 label: <Link to="/categories">Categories</Link>,
                 key: '/categories',
-                icon: <TagOutlined />,
+                icon: <AppstoreOutlined />,
               },
               {
                 label: <Link to="/vendors">Vendors</Link>,
@@ -70,9 +81,6 @@ export const AppSider = memo(() => {
             type: 'divider',
           },
           { label: <Link to="/admins">Admins</Link>, key: '/admins', icon: <SolutionOutlined /> },
-          {
-            type: 'divider',
-          },
         ]}
       />
     </Sider>

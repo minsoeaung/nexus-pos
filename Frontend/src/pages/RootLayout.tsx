@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { Alert, Layout } from 'antd';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AutoBreadcrumbs } from '../components/AutoBreadcrumbs.tsx';
 import { AppHeader, headerHeight } from '../components/AppHeader.tsx';
@@ -12,7 +12,9 @@ import { useQuery } from 'react-query';
 import { Suspense } from 'react';
 import { Fallback } from '../components/Fallback.tsx';
 
-const outletPadding = 20;
+const { ErrorBoundary } = Alert;
+
+export const outletPadding = 20;
 
 export const RootLayout = () => {
   const location = useLocation();
@@ -56,7 +58,9 @@ export const RootLayout = () => {
           >
             <AutoBreadcrumbs />
             <Suspense fallback={<Fallback />}>
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </Suspense>
           </Content>
         </Layout>

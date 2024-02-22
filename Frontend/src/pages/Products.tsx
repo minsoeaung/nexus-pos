@@ -131,10 +131,15 @@ const Products: FunctionComponent = () => {
         dataIndex: 'price',
         key: 'price',
         sorter: true,
-        align: 'right',
         width: '10%',
-        render: (_, record) => <p
-          style={{ marginRight: '10px', letterSpacing: 'px' }}>{USDollar.format(record.price)}</p>,
+        render: (_, record) => (
+          <Space>
+            <TagOutlined style={{ color: 'green' }} />
+            <p style={{ marginRight: '10px', letterSpacing: 'px', color: 'green' }}>
+              {USDollar.format(record.price)}
+            </p>
+          </Space>
+        ),
       },
       {
         title: 'Vendor',
@@ -152,7 +157,7 @@ const Products: FunctionComponent = () => {
         width: '15%',
         filters: categories ? categories.map(v => ({ text: v.name, value: v.name })) : [],
         defaultFilteredValue: params.get('categories') ? params.get('categories')!.split(',') : [],
-        render: (_, record) => <Space><TagOutlined />{record.category.name}</Space>,
+        render: (_, record) => record.category.name,
       },
       {
         title: 'Added by',
@@ -309,7 +314,7 @@ const Products: FunctionComponent = () => {
                 });
               }}
             >
-              New
+              Add product
             </Button>
             <Button
               icon={<RedoOutlined />}

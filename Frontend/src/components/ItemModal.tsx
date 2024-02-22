@@ -50,11 +50,11 @@ export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, 
 
   return (
     <Modal
-      title={type === 'create' ? 'New product' : 'Edit product'}
+      title={type === 'create' ? 'Add product' : 'Edit product'}
       open={open}
       onOk={handleModalOk}
       onCancel={onCancel}
-      okText="Submit"
+      okText={type === 'create' ? 'Add' : 'Save changes'}
       okButtonProps={{ loading }}
     >
       <br />

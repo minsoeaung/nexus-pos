@@ -5,12 +5,14 @@ import { Dashboard } from './Dashboard.tsx';
 import { NotFound } from './NotFound.tsx';
 import { Space } from 'antd';
 import {
+  AppstoreOutlined,
   DashboardOutlined,
   DropboxOutlined,
+  HistoryOutlined,
   KeyOutlined,
   ShopOutlined,
+  ShoppingCartOutlined,
   SolutionOutlined,
-  TagOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { ProductDetail } from './ProductDetail.tsx';
@@ -23,6 +25,8 @@ const Admins = lazy(() => import('./Admins.tsx'));
 const Products = lazy(() => import('./Products.tsx'));
 const ResetPassword = lazy(() => import('./ResetPassword.tsx'));
 const Account = lazy(() => import('./Account.tsx'));
+const Sales = lazy(() => import('./Sales.tsx'));
+const SalesHistory = lazy(() => import('./SalesHistory.tsx'));
 
 
 export const router = createBrowserRouter([
@@ -38,6 +42,20 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: 'sales',
+        element: <Sales />,
+        handle: {
+          crumb: () => <Link to="/sales"><Space><ShoppingCartOutlined />Sales</Space></Link>,
+        },
+      },
+      {
+        path: 'sales-history',
+        element: <SalesHistory />,
+        handle: {
+          crumb: () => <Link to="/sales-history"><Space><HistoryOutlined />Sales History</Space></Link>,
+        },
+      },
+      {
         path: 'products',
         element: <Products />,
         handle: {
@@ -48,7 +66,7 @@ export const router = createBrowserRouter([
         path: 'categories',
         element: <Categories />,
         handle: {
-          crumb: () => <Link to="/categories"><Space><TagOutlined />Categories</Space></Link>,
+          crumb: () => <Link to="/categories"><Space><AppstoreOutlined />Categories</Space></Link>,
         },
       },
       {
