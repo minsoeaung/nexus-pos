@@ -7,12 +7,13 @@ import {
   Flex,
   List,
   message,
+  Result,
   Row,
   Select,
   Spin,
   Typography,
 } from 'antd';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ApiClient } from '../api/apiClient.ts';
 import { Category, Item as ItemType, Vendor } from '../types/Item.ts';
 import { headerHeight } from '../components/AppHeader.tsx';
@@ -26,6 +27,9 @@ import { USDollar } from './Products.tsx';
 import { ReceiptRequest } from '../types/ReceiptRequest.ts';
 import { ErrorAlert } from '../components/ErrorAlert.tsx';
 import { ApiError } from '../types/ApiError.ts';
+import { CustomerForm } from '../components/CustomerForm.tsx';
+import { Customer } from '../types/ReceiptDto.ts';
+import { useForm } from 'antd/es/form/Form';
 
 const { Title, Text } = Typography;
 
@@ -36,6 +40,11 @@ const Sales = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedVendor, setSelectedVendor] = useState('');
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
+  const [success, setSuccess] = useState(false);
+
+  const [form] = useForm<Customer>();
+
+  const queryClient = useQueryClient();
 
   const timerRef = useRef(0);
 
@@ -60,12 +69,11 @@ const Sales = () => {
 
   const placeOrderMutation = useMutation({
     mutationFn: async (payload: ReceiptRequest) => await ApiClient.post('api/Receipts', payload),
-    onSuccess: () => {
-      message.success({
-        type: 'success',
-        content: 'Order has been completed.',
-      });
+    onSuccess: async () => {
       setSelectedProducts([]);
+      form.resetFields();
+      await queryClient.invalidateQueries(['customers']);
+      setSuccess(true);
     },
   });
 
@@ -91,12 +99,18 @@ const Sales = () => {
   }, [selectedProducts]);
 
   const handlePlaceOrder = async () => {
+    if (selectedProducts.length === 0) {
+      message.warning('No product selected.');
+      return;
+    }
+
+    await form.validateFields();
+
     await placeOrderMutation.mutateAsync({
-      // TODO: replace this
-      customerId: 5,
-      name: '',
-      address: '',
-      phoneNumber: '',
+      customerId: form.getFieldValue('id') || 0,
+      name: form.getFieldValue('name') || '',
+      address: form.getFieldValue('address') || '',
+      phoneNumber: form.getFieldValue('phoneNumber') || '',
       orderItems: selectedProducts.map(p => ({ itemId: p.itemId, quantity: p.quantity })),
     });
   };
@@ -115,14 +129,34 @@ const Sales = () => {
     {
       key: '3',
       label: 'Sub total',
-      children: USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0)),
+      children: (
+        <span style={{ color: 'green', fontWeight: 'bold' }}>
+          {USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0))}
+        </span>
+      ),
     },
     {
       key: '4',
       label: 'Total',
-      children: USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0)),
+      children: (
+        <span style={{ color: 'green', fontWeight: 'bold' }}>
+          {USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0))}
+        </span>
+      ),
     },
   ];
+
+  if (success) {
+    return (
+      <Result
+        status="success"
+        title="Successfully Processed Order!"
+        extra={[
+          <Button onClick={() => setSuccess(false)}>Order Again</Button>,
+        ]}
+      />
+    );
+  }
 
   return (
     <section>
@@ -263,8 +297,11 @@ const Sales = () => {
             style={{ position: 'sticky', top: headerHeight + outletPadding }}
           >
             <Descriptions title="Order Summary" items={items} column={1} />
-            <Button block type="primary" onClick={handlePlaceOrder} loading={placeOrderMutation.isLoading}
-                    disabled={selectedProducts.length === 0}>
+            <Card title="Customer info" size="small" headStyle={{ fontSize: '0.8rem' }}>
+              <CustomerForm form={form} />
+            </Card>
+            <br />
+            <Button size="large" block type="primary" onClick={handlePlaceOrder} loading={placeOrderMutation.isLoading}>
               Place order
             </Button>
           </Card>

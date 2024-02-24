@@ -1,7 +1,7 @@
 import { Button, Popconfirm, Space, Table, TableProps, Typography } from 'antd';
 import { USDollar } from '../pages/Products.tsx';
 import { OrderItem } from '../types/ReceiptRequest.ts';
-import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DropboxOutlined, MinusOutlined, PlusOutlined, TagOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -20,7 +20,7 @@ type Props = {
 export const SelectedProductToSell = ({ dataSource = [], updateQuantity, removeProduct }: Props) => {
   const columns: TableProps<SelectedProduct>['columns'] = [
     {
-      title: 'PRODUCT',
+      title: 'PRODUCT NAME',
       dataIndex: 'Name',
       key: 'Name',
       width: '70%',
@@ -40,7 +40,9 @@ export const SelectedProductToSell = ({ dataSource = [], updateQuantity, removeP
       render: (_, record) => <Space>
         <Button type="primary" shape="circle" icon={<MinusOutlined />}
                 onClick={() => updateQuantity(record.itemId, record.quantity - 1)} disabled={record.quantity === 1} />
-        {record.quantity}
+        <div style={{ minWidth: '30px', textAlign: 'center' }}>
+          {record.quantity}
+        </div>
         <Button type="primary" shape="circle" icon={<PlusOutlined />}
                 onClick={() => updateQuantity(record.itemId, record.quantity + 1)} />
       </Space>,
@@ -51,7 +53,16 @@ export const SelectedProductToSell = ({ dataSource = [], updateQuantity, removeP
       key: 'Price',
       align: 'right',
       width: '10%',
-      render: (_, record) => <p>{USDollar.format(record.price * record.quantity)}</p>,
+      render: (_, record) => {
+        return (
+          <Space>
+            <TagOutlined style={{ color: 'green' }} />
+            <p style={{ marginRight: '10px', letterSpacing: '1px', color: 'green' }}>
+              {USDollar.format(record.price * record.quantity)}
+            </p>
+          </Space>
+        );
+      },
     },
     {
       title: '',
@@ -74,6 +85,16 @@ export const SelectedProductToSell = ({ dataSource = [], updateQuantity, removeP
 
   return (
     <Table
+      locale={{
+        emptyText: (
+          <div style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+            <p>
+              <DropboxOutlined style={{ fontSize: '4rem' }} />
+            </p>
+            <p>Add product here</p>
+          </div>
+        ),
+      }}
       size="small"
       columns={columns}
       rowKey={item => item.itemId}

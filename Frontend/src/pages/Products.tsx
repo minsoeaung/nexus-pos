@@ -135,7 +135,7 @@ const Products: FunctionComponent = () => {
         render: (_, record) => (
           <Space>
             <TagOutlined style={{ color: 'green' }} />
-            <p style={{ marginRight: '10px', letterSpacing: 'px', color: 'green' }}>
+            <p style={{ marginRight: '10px', letterSpacing: '1px', color: 'green' }}>
               {USDollar.format(record.price)}
             </p>
           </Space>
