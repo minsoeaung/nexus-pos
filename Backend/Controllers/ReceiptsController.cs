@@ -23,6 +23,7 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
             .Include(r => r.ReceiptItems)
             .ThenInclude(ri => ri.Item)
             .ThenInclude(i => i.Category)
+            .OrderByDescending(r => r.CreatedAt)
             .AsNoTracking()
             .ToListAsync();
     }
@@ -39,6 +40,7 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
             .Include(r => r.ReceiptItems)
             .ThenInclude(ri => ri.Item)
             .ThenInclude(i => i.Category)
+            .OrderByDescending(r => r.CreatedAt)
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id);
 

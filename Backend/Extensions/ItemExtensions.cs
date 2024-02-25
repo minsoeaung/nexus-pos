@@ -4,6 +4,14 @@ namespace Backend.Extensions;
 
 public static class ItemExtensions
 {
+    public static IQueryable<Item> StockLessThanOrEquals(this IQueryable<Item> query, int? stockThreshold)
+    {
+        if (stockThreshold is >= 0)
+            return query.Where(item => item.Stock <= stockThreshold);
+
+        return query;
+    }
+
     public static IQueryable<Item> Sort(this IQueryable<Item> query, string? orderBy)
     {
         query = orderBy switch
@@ -12,6 +20,7 @@ public static class ItemExtensions
             "priceDesc" => query.OrderByDescending(p => p.Price),
             "stock" => query.OrderBy(p => p.Stock),
             "stockDesc" => query.OrderByDescending(p => p.Stock),
+            "stockThreshold" => query.Where(p => p.Stock <= 20),
             _ => query.OrderByDescending(p => p.Id)
         };
 

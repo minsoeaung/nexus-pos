@@ -18,7 +18,7 @@ import { ApiClient } from '../api/apiClient.ts';
 import { Category, Item as ItemType, Vendor } from '../types/Item.ts';
 import { headerHeight } from '../components/AppHeader.tsx';
 import { outletPadding } from './RootLayout.tsx';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SelectedProduct, SelectedProductToSell } from '../components/SelectedProductToSell.tsx';
 import { PagedResponse } from '../types/PagedResponse.ts';
 import { LabeledValue } from 'antd/es/select';
@@ -48,7 +48,7 @@ const Sales = () => {
 
   const timerRef = useRef(0);
 
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['products', { selectedCategory, selectedVendor, searchTerm }],
     queryFn: async () => await ApiClient.get<never, PagedResponse<ItemType>>(`api/items?searchTerm=${searchTerm}&categories=${selectedCategory}&vendors=${selectedVendor}`),
     onSuccess: (data) => {
@@ -76,6 +76,10 @@ const Sales = () => {
       setSuccess(true);
     },
   });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const handleSearchTermChange = (value: string) => {
     if (timerRef.current) clearTimeout(timerRef.current);

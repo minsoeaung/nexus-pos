@@ -28,6 +28,7 @@ public class ItemsController(StoreContext storeContext, IMapper mapper, UserMana
             .Sort(itemsParams.OrderBy)
             .Search(itemsParams.SearchTerm)
             .Filter(itemsParams.Vendors, itemsParams.Categories)
+            .StockLessThanOrEquals(itemsParams.StockThreshold)
             .AsNoTracking()
             .AsQueryable();
 

@@ -113,8 +113,6 @@ const Products: FunctionComponent = () => {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        filterSearch: true,
-        filterMode: 'menu',
         width: '20%',
         render: (_, record) => <p>{record.name}</p>,
       },
@@ -135,7 +133,7 @@ const Products: FunctionComponent = () => {
         render: (_, record) => (
           <Space>
             <TagOutlined style={{ color: 'green' }} />
-            <p style={{ marginRight: '10px', letterSpacing: '1px', color: 'green' }}>
+            <p style={{ marginRight: '10px', color: 'green' }}>
               {USDollar.format(record.price)}
             </p>
           </Space>
