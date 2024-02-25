@@ -13,4 +13,6 @@ public class Item
     public int AppUserId { get; set; } // Admin
     public AppUser AppUser { get; set; } // Admin
     public DateTime CreatedAt { get; set; }
+
+    public ICollection<ReceiptItem> ReceiptItems { get; set; } = [];
 }

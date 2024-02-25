@@ -107,14 +107,14 @@ const Products: FunctionComponent = () => {
         dataIndex: 'id',
         key: 'id',
         width: '5%',
-        render: (_, record) => <p>{record.id}</p>,
+        render: (id) => id,
       },
       {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
         width: '20%',
-        render: (_, record) => <p>{record.name}</p>,
+        render: (name) => name,
       },
       {
         title: 'Stock',
@@ -146,7 +146,7 @@ const Products: FunctionComponent = () => {
         width: '15%',
         filters: vendors ? vendors.map(v => ({ text: v.name, value: v.name })) : [],
         defaultFilteredValue: params.get('vendors') ? params.get('vendors')!.split(',') : [],
-        render: (_, record) => <p>{record.vendor.name}</p>,
+        render: (_, record) => record.vendor.name,
       },
       {
         title: 'Category',
@@ -171,7 +171,7 @@ const Products: FunctionComponent = () => {
         dataIndex: 'createdAt',
         key: 'createdAt',
         width: '15%',
-        render: (_, record) => <p>{new Date(record.createdAt).toLocaleDateString('en-GB')}</p>,
+        render: (createdAt) => new Date(createdAt).toLocaleDateString('en-GB'),
       },
       {
         title: 'Options',

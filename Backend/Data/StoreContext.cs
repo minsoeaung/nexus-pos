@@ -14,6 +14,11 @@ public class StoreContext(DbContextOptions options) : IdentityDbContext<AppUser,
         builder.Entity<AppUser>().ToTable("Users");
         builder.Entity<AppRole>().ToTable("Roles");
         builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+
+        builder.Entity<Item>()
+            .HasMany(i => i.ReceiptItems)
+            .WithOne(r => r.Item)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public DbSet<Category> Categories => Set<Category>();

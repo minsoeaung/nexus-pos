@@ -1,10 +1,12 @@
 import Title from 'antd/es/typography/Title';
-import { Badge, Button, Card, Descriptions, DescriptionsProps, Table, TableProps } from 'antd';
+import { Badge, Button, Card, Descriptions, DescriptionsProps, Table, TableProps, Typography } from 'antd';
 import { useQuery } from 'react-query';
 import { ApiClient } from '../api/apiClient.ts';
 import { Receipt } from '../types/ReceiptDto.ts';
 import { RedoOutlined } from '@ant-design/icons';
 import { USDollar } from './Products.tsx';
+
+const { Text } = Typography;
 
 const columns: TableProps<Receipt>['columns'] = [
   {
@@ -91,7 +93,8 @@ const SalesHistory = () => {
                     <div>
                       {record.receiptItems.map(receiptItem => (
                         <div key={receiptItem.id}>
-                          {`${receiptItem.item?.name} - ${receiptItem.quantity}x (${USDollar.format(receiptItem.price)} each)`}
+                          {receiptItem.item ? receiptItem.item.name : <Text type="secondary">Deleted
+                            product</Text>} - {`${receiptItem.quantity}x (${USDollar.format(receiptItem.price)} each)`}
                           <br />
                         </div>
                       ))}
