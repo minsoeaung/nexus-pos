@@ -1,18 +1,19 @@
-import { Badge, Button, Card, Input, message, Popconfirm, Space, Table, TableProps, Tag } from 'antd';
-import { useMutation, useQuery } from 'react-query';
-import { useSearchParams } from 'react-router-dom';
-import { ApiClient } from '../api/apiClient.ts';
-import { PagedResponse } from '../types/PagedResponse.ts';
-import { Category, Item, Vendor } from '../types/Item.ts';
-import { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react';
-import { ItemModal } from '../components/ItemModal.tsx';
-import { ItemDto } from '../types/ItemDto.ts';
+import {Badge, Button, Card, Input, message, Popconfirm, Space, Table, TableProps, Tag} from 'antd';
+import {useMutation, useQuery} from 'react-query';
+import {useSearchParams} from 'react-router-dom';
+import {ApiClient} from '../api/apiClient.ts';
+import {PagedResponse} from '../types/PagedResponse.ts';
+import {Item, NamedApiResource} from '../types/Item.ts';
+import {FunctionComponent, useCallback, useMemo, useRef, useState} from 'react';
+import {ItemModal} from '../components/ItemModal.tsx';
+import {ItemDto} from '../types/ItemDto.ts';
 import Title from 'antd/es/typography/Title';
-import { DeleteOutlined, EditOutlined, PlusOutlined, RedoOutlined, StopOutlined, TagOutlined } from '@ant-design/icons';
-import { ApiError } from '../types/ApiError.ts';
-import { SearchProps } from 'antd/es/input';
+import {DeleteOutlined, EditOutlined, PlusOutlined, RedoOutlined, StopOutlined, TagOutlined} from '@ant-design/icons';
+import {ApiError} from '../types/ApiError.ts';
+import {SearchProps} from 'antd/es/input';
+import Highlighter from 'react-highlight-words';
 
-const { Search } = Input;
+const {Search} = Input;
 
 export const USDollar = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -36,20 +37,20 @@ const Products: FunctionComponent = () => {
 
   const updatingProductId = useRef(0);
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const {data, isLoading, isFetching, refetch} = useQuery({
     queryKey: ['products', params.toString()],
     queryFn: async () => await ApiClient.get<never, PagedResponse<Item>>(`api/items?${params.toString()}`),
     keepPreviousData: true,
   });
 
-  const { data: categories } = useQuery({
+  const {data: categories} = useQuery({
     queryKey: ['categories'],
-    queryFn: async () => await ApiClient.get<never, Category[]>('api/categories'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/categories'),
   });
 
-  const { data: vendors } = useQuery({
+  const {data: vendors} = useQuery({
     queryKey: ['vendors'],
-    queryFn: async () => await ApiClient.get<never, Vendor[]>('api/vendors'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/vendors'),
   });
 
   const deleteProductMutation = useMutation({
@@ -114,7 +115,21 @@ const Products: FunctionComponent = () => {
         dataIndex: 'name',
         key: 'name',
         width: '20%',
-        render: (name) => name,
+        render: (name) => {
+          const searchTerm = params.get('searchTerm') || '';
+          if (!!searchTerm.trim()) {
+            return (
+              <Highlighter
+                highlightStyle={{backgroundColor: '#ffc069', padding: 0}}
+                searchWords={[searchTerm]}
+                autoEscape
+                textToHighlight={name}
+              />
+            );
+          } else {
+            return name;
+          }
+        },
       },
       {
         title: 'Stock',
@@ -122,7 +137,7 @@ const Products: FunctionComponent = () => {
         key: 'stock',
         sorter: true,
         width: '10%',
-        render: (_, record) => <Badge status={record.stock > 20 ? 'success' : 'warning'} text={record.stock} />,
+        render: (_, record) => <Badge status={record.stock > 20 ? 'success' : 'warning'} text={record.stock}/>,
       },
       {
         title: 'Price',
@@ -132,8 +147,8 @@ const Products: FunctionComponent = () => {
         width: '10%',
         render: (_, record) => (
           <Space>
-            <TagOutlined style={{ color: 'green' }} />
-            <p style={{ marginRight: '10px', color: 'green' }}>
+            <TagOutlined style={{color: 'green'}}/>
+            <p style={{marginRight: '10px', color: 'green'}}>
               {USDollar.format(record.price)}
             </p>
           </Space>
@@ -144,7 +159,7 @@ const Products: FunctionComponent = () => {
         dataIndex: 'vendor',
         key: 'vendor',
         width: '15%',
-        filters: vendors ? vendors.map(v => ({ text: v.name, value: v.name })) : [],
+        filters: vendors ? vendors.map(v => ({text: v.name, value: v.name})) : [],
         defaultFilteredValue: params.get('vendors') ? params.get('vendors')!.split(',') : [],
         render: (_, record) => record.vendor.name,
       },
@@ -153,7 +168,7 @@ const Products: FunctionComponent = () => {
         dataIndex: 'category',
         key: 'category',
         width: '15%',
-        filters: categories ? categories.map(v => ({ text: v.name, value: v.name })) : [],
+        filters: categories ? categories.map(v => ({text: v.name, value: v.name})) : [],
         defaultFilteredValue: params.get('categories') ? params.get('categories')!.split(',') : [],
         render: (_, record) => record.category.name,
       },
@@ -164,7 +179,7 @@ const Products: FunctionComponent = () => {
         width: '15%',
         render: (_, record) => <Tag
           color={record.createdBy.suspend ? 'error' : 'processing'}
-          icon={record.createdBy.suspend ? <StopOutlined /> : null}>{record.createdBy.userName}</Tag>,
+          icon={record.createdBy.suspend ? <StopOutlined/> : null}>{record.createdBy.userName}</Tag>,
       },
       {
         title: 'Create date',
@@ -195,7 +210,7 @@ const Products: FunctionComponent = () => {
                   },
                 });
               }}
-              icon={<EditOutlined />}
+              icon={<EditOutlined/>}
               size="small"
             >
               Edit
@@ -211,7 +226,7 @@ const Products: FunctionComponent = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button danger type="link" icon={<DeleteOutlined />} size="small">Delete</Button>
+              <Button danger type="link" icon={<DeleteOutlined/>} size="small">Delete</Button>
             </Popconfirm>
           </Space>
         ),
@@ -219,7 +234,7 @@ const Products: FunctionComponent = () => {
     ];
 
     return columns;
-  }, [categories, vendors]);
+  }, [categories, vendors, params]);
 
   const handleTableChange = useCallback<NonNullable<TableProps<Item>['onChange']>>((pagination, filters, sorter) => {
     // Paginate
@@ -293,17 +308,24 @@ const Products: FunctionComponent = () => {
   return (
     <section>
       <Title level={3}>Products</Title>
-      <br />
+      <br/>
       <Card
         headStyle={{
           borderBottom: 'none',
         }}
         extra={
           <Space>
-            <Search allowClear placeholder="Search products..." onSearch={onSearch} style={{ width: 200 }} />
+            <Search
+              defaultValue={params.get('searchTerm') || ''}
+              allowClear
+              placeholder="Search product name..."
+              onSearch={onSearch}
+              style={{width: 250}}
+              enterButton
+            />
             <Button
               type="primary"
-              icon={<PlusOutlined />}
+              icon={<PlusOutlined/>}
               onClick={() => {
                 setModalProps({
                   type: 'create',
@@ -315,7 +337,7 @@ const Products: FunctionComponent = () => {
               Add product
             </Button>
             <Button
-              icon={<RedoOutlined />}
+              icon={<RedoOutlined/>}
               onClick={() => refetch()}
             />
           </Space>

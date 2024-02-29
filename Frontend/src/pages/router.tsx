@@ -27,7 +27,7 @@ const ResetPassword = lazy(() => import('./ResetPassword.tsx'));
 const Account = lazy(() => import('./Account.tsx'));
 const Sales = lazy(() => import('./Sales.tsx'));
 const SalesHistory = lazy(() => import('./SalesHistory.tsx'));
-
+const Customers = lazy(() => import('./Customers.tsx'));
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +81,13 @@ export const router = createBrowserRouter([
         element: <Admins />,
         handle: {
           crumb: () => <Link to="/admins"><Space><SolutionOutlined />Admins</Space></Link>,
+        },
+      },
+      {
+        path: 'customers',
+        element: <Customers />,
+        handle: {
+          crumb: () => <Link to="/customers"><Space><UserOutlined />Customers</Space></Link>,
         },
       },
       {

@@ -32,8 +32,17 @@ public class VendorsController(StoreContext storeContext) : BaseApiController
         if (vendor == null)
             return NotFound();
 
-        vendor.Name = name;
-        await storeContext.SaveChangesAsync();
+        vendor.Name = name.Trim();
+
+        try
+        {
+            await storeContext.SaveChangesAsync();
+        }
+        catch
+        {
+            ModelState.AddModelError("Duplicate", $"{vendor.Name} already exists.");
+            return ValidationProblem();
+        }
 
         return vendor;
     }
@@ -46,11 +55,20 @@ public class VendorsController(StoreContext storeContext) : BaseApiController
 
         var vendor = new Vendor
         {
-            Name = name
+            Name = name.Trim()
         };
 
         storeContext.Vendors.Add(vendor);
-        await storeContext.SaveChangesAsync();
+
+        try
+        {
+            await storeContext.SaveChangesAsync();
+        }
+        catch
+        {
+            ModelState.AddModelError("Duplicate", $"{vendor.Name} already exists.");
+            return ValidationProblem();
+        }
 
         return CreatedAtAction(
             nameof(GetVendor),

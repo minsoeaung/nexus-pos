@@ -1,16 +1,7 @@
-import Title from "antd/es/typography/Title";
-import {Card} from "antd";
+import {CategoriesOrVendors} from "../components/CategoriesOrVendors.tsx";
 
 const Categories = () => {
-  return (
-    <section>
-      <Title level={3}>Categories</Title>
-      <br/>
-      <Card>
-        
-      </Card>
-    </section>
-  )
-}
+  return <CategoriesOrVendors type="categories"/>
+};
 
 export default Categories;

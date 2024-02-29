@@ -13,25 +13,25 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ApiClient } from '../api/apiClient.ts';
-import { Category, Item as ItemType, Vendor } from '../types/Item.ts';
-import { headerHeight } from '../components/AppHeader.tsx';
-import { outletPadding } from './RootLayout.tsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { SelectedProduct, SelectedProductToSell } from '../components/SelectedProductToSell.tsx';
-import { PagedResponse } from '../types/PagedResponse.ts';
-import { LabeledValue } from 'antd/es/select';
-import { CheckOutlined } from '@ant-design/icons';
-import { USDollar } from './Products.tsx';
-import { ReceiptRequest } from '../types/ReceiptRequest.ts';
-import { ErrorAlert } from '../components/ErrorAlert.tsx';
-import { ApiError } from '../types/ApiError.ts';
-import { CustomerForm } from '../components/CustomerForm.tsx';
-import { Customer } from '../types/ReceiptDto.ts';
-import { useForm } from 'antd/es/form/Form';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {ApiClient} from '../api/apiClient.ts';
+import {Item as ItemType, NamedApiResource} from '../types/Item.ts';
+import {headerHeight} from '../components/AppHeader.tsx';
+import {outletPadding} from './RootLayout.tsx';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {SelectedProduct, SelectedProductToSell} from '../components/SelectedProductToSell.tsx';
+import {PagedResponse} from '../types/PagedResponse.ts';
+import {LabeledValue} from 'antd/es/select';
+import {CheckOutlined} from '@ant-design/icons';
+import {USDollar} from './Products.tsx';
+import {ReceiptRequest} from '../types/ReceiptRequest.ts';
+import {ErrorAlert} from '../components/ErrorAlert.tsx';
+import {ApiError} from '../types/ApiError.ts';
+import {CustomerForm} from '../components/CustomerForm.tsx';
+import {Customer} from '../types/ReceiptDto.ts';
+import {useForm} from 'antd/es/form/Form';
 
-const { Title, Text } = Typography;
+const {Title, Text} = Typography;
 
 const Sales = () => {
   const [searchCardHeight, setSearchCardHeight] = useState(0);
@@ -48,23 +48,23 @@ const Sales = () => {
 
   const timerRef = useRef(0);
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
-    queryKey: ['products', { selectedCategory, selectedVendor, searchTerm }],
+  const {data, isLoading, isFetching, refetch} = useQuery({
+    queryKey: ['products', {selectedCategory, selectedVendor, searchTerm}],
     queryFn: async () => await ApiClient.get<never, PagedResponse<ItemType>>(`api/items?searchTerm=${searchTerm}&categories=${selectedCategory}&vendors=${selectedVendor}`),
     onSuccess: (data) => {
-      setOptions(data.results.map(product => ({ value: product.id, label: product.name })));
+      setOptions(data.results.map(product => ({value: product.id, label: product.name})));
     },
     keepPreviousData: true,
   });
 
-  const { data: categories } = useQuery({
+  const {data: categories} = useQuery({
     queryKey: ['categories'],
-    queryFn: async () => await ApiClient.get<never, Category[]>('api/categories'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/categories'),
   });
 
-  const { data: vendors } = useQuery({
+  const {data: vendors} = useQuery({
     queryKey: ['vendors'],
-    queryFn: async () => await ApiClient.get<never, Vendor[]>('api/vendors'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/vendors'),
   });
 
   const placeOrderMutation = useMutation({
@@ -115,7 +115,7 @@ const Sales = () => {
       name: form.getFieldValue('name') || '',
       address: form.getFieldValue('address') || '',
       phoneNumber: form.getFieldValue('phoneNumber') || '',
-      orderItems: selectedProducts.map(p => ({ itemId: p.itemId, quantity: p.quantity })),
+      orderItems: selectedProducts.map(p => ({itemId: p.itemId, quantity: p.quantity})),
     });
   };
 
@@ -134,7 +134,7 @@ const Sales = () => {
       key: '3',
       label: 'Sub total',
       children: (
-        <span style={{ color: 'green', fontWeight: 'bold' }}>
+        <span style={{color: 'green', fontWeight: 'bold'}}>
           {USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0))}
         </span>
       ),
@@ -143,7 +143,7 @@ const Sales = () => {
       key: '4',
       label: 'Total',
       children: (
-        <span style={{ color: 'green', fontWeight: 'bold' }}>
+        <span style={{color: 'green', fontWeight: 'bold'}}>
           {USDollar.format(selectedProducts.reduce((previousValue, product) => previousValue + (product.quantity * product.price), 0))}
         </span>
       ),
@@ -165,11 +165,11 @@ const Sales = () => {
   return (
     <section>
       <Title level={3}>Sales</Title>
-      <br />
+      <br/>
       {placeOrderMutation.isError && (
         <>
-          <ErrorAlert error={placeOrderMutation.error as ApiError} />
-          <br />
+          <ErrorAlert error={placeOrderMutation.error as ApiError}/>
+          <br/>
         </>
       )}
       <Row gutter={outletPadding}>
@@ -192,8 +192,8 @@ const Sales = () => {
                         }}
                       >
                         {(isLoading || isFetching) ? (
-                          <div style={{ textAlign: 'center', paddingTop: '20px', paddingBottom: '20px' }}>
-                            <Spin />
+                          <div style={{textAlign: 'center', paddingTop: '20px', paddingBottom: '20px'}}>
+                            <Spin/>
                           </div>
                         ) : (
                           <div>
@@ -237,7 +237,7 @@ const Sales = () => {
                                     />
                                     {position >= 0 && (
                                       <Text type="success">
-                                        <CheckOutlined />
+                                        <CheckOutlined/>
                                       </Text>
                                     )}
                                   </List.Item>
@@ -252,14 +252,14 @@ const Sales = () => {
                     placeholder="Select product to add..."
                     size="large"
                     showSearch
-                    style={{ width: '100%' }}
+                    style={{width: '100%'}}
                     options={options}
                     onSearch={handleSearchTermChange}
                   />
                   <Select
                     size="large"
                     placeholder="Category"
-                    style={{ width: 300 }}
+                    style={{width: 300}}
                     onChange={(value) => setSelectedCategory(value || '')}
                     options={categories ? categories.map(category => ({
                       value: category.name,
@@ -270,9 +270,9 @@ const Sales = () => {
                   <Select
                     size="large"
                     placeholder="Vendor"
-                    style={{ width: 300 }}
+                    style={{width: 300}}
                     onChange={(value) => setSelectedVendor(value || '')}
-                    options={vendors ? vendors.map(vendor => ({ value: vendor.name, label: vendor.name })) : []}
+                    options={vendors ? vendors.map(vendor => ({value: vendor.name, label: vendor.name})) : []}
                     allowClear
                   />
                 </Flex>
@@ -298,13 +298,13 @@ const Sales = () => {
         </Col>
         <Col span={6}>
           <Card
-            style={{ position: 'sticky', top: headerHeight + outletPadding }}
+            style={{position: 'sticky', top: headerHeight + outletPadding}}
           >
-            <Descriptions title="Order Summary" items={items} column={1} />
-            <Card title="Customer info" size="small" headStyle={{ fontSize: '0.8rem' }}>
-              <CustomerForm form={form} />
+            <Descriptions title="Order Summary" items={items} column={1}/>
+            <Card title="Customer info" size="small" headStyle={{fontSize: '0.8rem'}}>
+              <CustomerForm form={form}/>
             </Card>
-            <br />
+            <br/>
             <Button size="large" block type="primary" onClick={handlePlaceOrder} loading={placeOrderMutation.isLoading}>
               Place order
             </Button>

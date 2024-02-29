@@ -1,11 +1,11 @@
-import { Form, Input, Modal, Select } from 'antd';
-import { ItemDto } from '../types/ItemDto.ts';
-import { useQuery } from 'react-query';
-import { ApiClient } from '../api/apiClient.ts';
-import { Category, Vendor } from '../types/Item.ts';
-import { memo, useEffect } from 'react';
-import { ErrorAlert } from './ErrorAlert.tsx';
-import { ApiError } from '../types/ApiError.ts';
+import {Form, Input, Modal, Select} from 'antd';
+import {ItemDto} from '../types/ItemDto.ts';
+import {useQuery} from 'react-query';
+import {ApiClient} from '../api/apiClient.ts';
+import {NamedApiResource} from '../types/Item.ts';
+import {memo, useEffect} from 'react';
+import {ErrorAlert} from './ErrorAlert.tsx';
+import {ApiError} from '../types/ApiError.ts';
 
 type ItemModalProps = {
   type: 'create' | 'update',
@@ -17,17 +17,17 @@ type ItemModalProps = {
   error: ApiError | undefined | null
 }
 
-export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, error }: ItemModalProps) => {
+export const ItemModal = memo(({type, open, data, onSubmit, onCancel, loading, error}: ItemModalProps) => {
   const [form] = Form.useForm();
 
-  const { data: categories } = useQuery({
+  const {data: categories} = useQuery({
     queryKey: ['categories'],
-    queryFn: async () => await ApiClient.get<never, Category[]>('api/categories'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/categories'),
   });
 
-  const { data: vendors } = useQuery({
+  const {data: vendors} = useQuery({
     queryKey: ['vendors'],
-    queryFn: async () => await ApiClient.get<never, Vendor[]>('api/vendors'),
+    queryFn: async () => await ApiClient.get<never, NamedApiResource[]>('api/vendors'),
   });
 
   const handleModalOk = () => {
@@ -55,9 +55,9 @@ export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, 
       onOk={handleModalOk}
       onCancel={onCancel}
       okText={type === 'create' ? 'Add' : 'Save changes'}
-      okButtonProps={{ loading }}
+      okButtonProps={{loading}}
     >
-      <br />
+      <br/>
       <Form
         form={form}
         layout="vertical"
@@ -66,15 +66,15 @@ export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, 
         <Form.Item<ItemDto>
           label="Name"
           name="name"
-          rules={[{ required: true, message: 'Please input item name!' }]}
+          rules={[{required: true, message: 'Please input item name!'}]}
         >
-          <Input placeholder="Please enter product name" />
+          <Input placeholder="Please enter product name"/>
         </Form.Item>
 
         <Form.Item<ItemDto>
           label="Vendor"
           name="vendorId"
-          rules={[{ required: true, message: 'Please select vendor!' }]}
+          rules={[{required: true, message: 'Please select vendor!'}]}
         >
           <Select placeholder="Please select vendor">
             {Array.isArray(vendors) && vendors.map(vendor => (
@@ -86,7 +86,7 @@ export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, 
         <Form.Item<ItemDto>
           label="Category"
           name="categoryId"
-          rules={[{ required: true, message: 'Please select category!' }]}
+          rules={[{required: true, message: 'Please select category!'}]}
         >
           <Select placeholder="Please select category">
             {Array.isArray(categories) && categories.map(category => (
@@ -99,26 +99,26 @@ export const ItemModal = memo(({ type, open, data, onSubmit, onCancel, loading, 
           label="Price"
           name="price"
           rules={[
-            { required: true, message: 'Please enter price!' },
+            {required: true, message: 'Please enter price!'},
           ]}
         >
-          <Input prefix="$" placeholder="Please enter price of the product" />
+          <Input prefix="$" placeholder="Please enter price of the product"/>
         </Form.Item>
 
         <Form.Item<ItemDto>
           label="Stock"
           name="stock"
           rules={[
-            { required: true, message: 'Please enter stock!' },
+            {required: true, message: 'Please enter stock!'},
           ]}
         >
-          <Input placeholder="Please enter quantity in stock" />
+          <Input placeholder="Please enter quantity in stock"/>
         </Form.Item>
       </Form>
       {error && (
-        <ErrorAlert error={error} />
+        <ErrorAlert error={error}/>
       )}
-      <br />
+      <br/>
     </Modal>
   );
 });

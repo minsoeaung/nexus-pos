@@ -1,8 +1,8 @@
 export type Item = {
   id: number;
   name: string;
-  vendor: Vendor;
-  category: Category;
+  vendor: NamedApiResource;
+  category: NamedApiResource;
   stock: number;
   price: number;
   createdBy: {
@@ -14,12 +14,7 @@ export type Item = {
   createdAt: string;
 }
 
-export type Vendor = {
-  id: number;
-  name: string;
-}
-
-export type Category = {
+export type NamedApiResource = {
   id: number;
   name: string;
 }

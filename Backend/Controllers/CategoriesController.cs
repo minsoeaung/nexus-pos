@@ -32,8 +32,17 @@ public class CategoriesController(StoreContext storeContext) : BaseApiController
         if (category == null)
             return NotFound();
 
-        category.Name = name;
-        await storeContext.SaveChangesAsync();
+        category.Name = name.Trim();
+
+        try
+        {
+            await storeContext.SaveChangesAsync();
+        }
+        catch
+        {
+            ModelState.AddModelError("Duplicate", $"{category.Name} already exists.");
+            return ValidationProblem();
+        }
 
         return category;
     }
@@ -46,11 +55,20 @@ public class CategoriesController(StoreContext storeContext) : BaseApiController
 
         var category = new Category
         {
-            Name = name
+            Name = name.Trim()
         };
 
         storeContext.Categories.Add(category);
-        await storeContext.SaveChangesAsync();
+
+        try
+        {
+            await storeContext.SaveChangesAsync();
+        }
+        catch
+        {
+            ModelState.AddModelError("Duplicate", $"{category.Name} already exists.");
+            return ValidationProblem();
+        }
 
         return CreatedAtAction(
             nameof(GetCategory),
