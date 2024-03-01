@@ -31,7 +31,7 @@ export const SalesProportion = memo(() => {
 
   return (
     <Card
-      title="Sales proportion"
+      title="Sales Proportion"
       bordered={false}
       extra={
         <Radio.Group defaultValue="category" onChange={(e) => setType(e.target.value)}>

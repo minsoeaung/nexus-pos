@@ -57,7 +57,7 @@ export const RootLayout = () => {
           padding: outletPadding,
           paddingBottom: 0,
           marginBottom: 0,
-          backgroundColor: '#f4f4f4'
+          backgroundColor: '#f4f4f4',
         }}>
           <Content
             style={{
@@ -72,7 +72,7 @@ export const RootLayout = () => {
             </Suspense>
           </Content>
           <Footer style={{textAlign: 'center'}}>
-            Advanced Database Management System, 2024 Created by Group 6
+            Advanced Database Management System, Project Created by Group 6, 2024
           </Footer>
         </Layout>
       </Layout>

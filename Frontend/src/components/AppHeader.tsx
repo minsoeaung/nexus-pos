@@ -1,27 +1,27 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { Dropdown, MenuProps, Space, Typography } from 'antd';
-import { Header } from 'antd/es/layout/layout';
-import { useAuth } from '../context/AuthContext.tsx';
-import { DownOutlined, KeyOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { useQueryClient } from 'react-query';
-import { memo } from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {Dropdown, MenuProps, Space, Typography} from 'antd';
+import {Header} from 'antd/es/layout/layout';
+import {useAuth} from '../context/AuthContext.tsx';
+import {DownOutlined, KeyOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
+import {useQueryClient} from 'react-query';
+import {memo} from 'react';
 
 export const headerHeight = 56;
 
 export const AppHeader = memo(() => {
-  const { user, logout } = useAuth();
+  const {user, logout} = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const items: MenuProps['items'] = [
     {
       label: <Link to="/account">Account</Link>,
-      icon: <UserOutlined />,
+      icon: <UserOutlined/>,
       key: 'account',
     },
     {
       label: <Link to="/reset-password">Reset password</Link>,
-      icon: <KeyOutlined />,
+      icon: <KeyOutlined/>,
       key: 'reset-password',
     },
     {
@@ -29,7 +29,7 @@ export const AppHeader = memo(() => {
     },
     {
       label: 'Logout',
-      icon: <LogoutOutlined />,
+      icon: <LogoutOutlined/>,
       danger: true,
       key: 'logout',
       onClick: () => {
@@ -51,22 +51,21 @@ export const AppHeader = memo(() => {
         alignItems: 'center',
         justifyContent: 'space-between',
         height: headerHeight,
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        // backgroundColor: '#161616',
-        background: 'transparent',
-        backdropFilter: 'blur(7px)',
-        borderBottom: '1px solid rgba(10, 10, 10, 0.1)',
+        // backgroundColor: 'rgba(0, 0, 0, 0)',
+        // background: 'transparent',
+        // backdropFilter: 'blur(7px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
-      <Link to="/" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+      <Link to="/" style={{fontSize: '1.5rem', color: "white"}}>
         App name
       </Link>
       {user && (
-        <Dropdown menu={{ items }} trigger={['click']} arrow>
+        <Dropdown menu={{items}} trigger={['click']} arrow>
           <a onClick={(e) => e.preventDefault()}>
             <Space>
-              <Typography>Hello {user.userName}</Typography>
-              <Typography><DownOutlined /></Typography>
+              <Typography style={{color: 'white'}}>Hello {user.userName}</Typography>
+              <Typography><DownOutlined style={{color: 'white'}}/></Typography>
             </Space>
           </a>
         </Dropdown>

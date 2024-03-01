@@ -1,5 +1,6 @@
 #nprogress .bar {
-    background: #1677ff !important;
+    /*background: #1677ff !important;*/
+    background: red !important;
     height: 3px !important;
     box-shadow: none !important;
 }

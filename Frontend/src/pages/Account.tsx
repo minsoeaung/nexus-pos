@@ -1,24 +1,24 @@
-import { Button, Card, Descriptions, Skeleton, Space, Typography } from 'antd';
+import {Button, Card, Descriptions, Skeleton, Space, Tag, Tooltip, Typography} from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import { useMutation, useQuery } from 'react-query';
-import { ApiClient } from '../api/apiClient.ts';
-import { AppUser } from '../types/AppUser.ts';
-import { CheckOutlined } from '@ant-design/icons';
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import {useMutation, useQuery} from 'react-query';
+import {ApiClient} from '../api/apiClient.ts';
+import {AppUser} from '../types/AppUser.ts';
+import {CheckOutlined, QuestionCircleOutlined} from '@ant-design/icons';
+import {useEffect} from 'react';
+import {useSearchParams} from 'react-router-dom';
 
-const { Title, Text } = Typography;
+const {Title, Text} = Typography;
 
 const Account = () => {
   const [params, setParams] = useSearchParams();
 
-  const { isLoading, data } = useQuery({
+  const {isLoading, data} = useQuery({
     queryKey: ['me'],
     queryFn: async () => await ApiClient.get<never, AppUser>('api/accounts/me'),
   });
 
   const sendConfirmationMailMutation = useMutation({
-    mutationFn: async (email: string) => await ApiClient.post('/api/accounts/resendConfirmationEmail', { email }),
+    mutationFn: async (email: string) => await ApiClient.post('/api/accounts/resendConfirmationEmail', {email}),
     onSuccess: () => {
       params.set('done', '1');
       setParams(params);
@@ -36,13 +36,13 @@ const Account = () => {
   return (
     <section>
       <Title level={3}>Account</Title>
-      <br />
+      <br/>
       <Card>
         {isLoading ? (
-          <Skeleton />
+          <Skeleton/>
         ) : (
           data && (
-            <Descriptions layout="horizontal" column={1} labelStyle={{ minWidth: '140px' }}>
+            <Descriptions layout="horizontal" column={1} labelStyle={{minWidth: '140px'}}>
               <DescriptionsItem label="Username">{data.userName}</DescriptionsItem>
               <DescriptionsItem label="Email">
                 <Space direction="vertical">
@@ -52,7 +52,7 @@ const Account = () => {
                   {data.emailConfirmed ? (
                     <Text type="secondary">
                       <Space>
-                        <CheckOutlined />
+                        <CheckOutlined/>
                         Confirmed
                       </Space>
                     </Text>
@@ -72,6 +72,23 @@ const Account = () => {
                     )
                   )}
                 </Space>
+              </DescriptionsItem>
+              <DescriptionsItem label="Privileges">
+                {data.roles.map(role => {
+                  return (
+                    <Tag>
+                      <Space>
+                        {role}
+                        <Tooltip
+                          title={role === "SuperAdmin" ? "SuperAdmins have full access and control over all features and functionalities within the app." : "Admins have full access and control over all features and functionalities within the app but are\n" +
+                            "      restricted from managing other admin accounts (admins CRUD)."}
+                          trigger={['click']}>
+                          <QuestionCircleOutlined/>
+                        </Tooltip>
+                      </Space>
+                    </Tag>
+                  )
+                })}
               </DescriptionsItem>
             </Descriptions>
           )

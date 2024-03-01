@@ -1,9 +1,9 @@
-import { RouterProvider } from 'react-router-dom';
-import { router } from './pages/router.tsx';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import { ConfigProvider } from 'antd';
-import { AuthContextProvider } from './context/AuthContext.tsx';
+import {RouterProvider} from 'react-router-dom';
+import {router} from './pages/router.tsx';
+import {QueryClient, QueryClientProvider} from 'react-query';
+import {ReactQueryDevtools} from 'react-query/devtools';
+import {ConfigProvider} from 'antd';
+import {AuthContextProvider} from './context/AuthContext.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,21 +18,24 @@ const queryClient = new QueryClient({
   },
 });
 
+// TODO: all list pagination
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
         theme={{
           token: {
-            // borderRadius: 2,
+            fontFamily: "IBM Plex Sans",
+            borderRadius: 4,
           },
         }}
       >
         <AuthContextProvider>
-          <RouterProvider router={router} />
+          <RouterProvider router={router}/>
         </AuthContextProvider>
       </ConfigProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false}/>
     </QueryClientProvider>
   );
 }

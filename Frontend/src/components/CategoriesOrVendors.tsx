@@ -1,12 +1,14 @@
 import {useEffect, useRef, useState} from "react";
-import {Button, Input, InputRef, message, Skeleton, Space, Spin} from "antd";
+import {Button, Input, InputRef, message, Modal, Skeleton, Space, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {ApiClient} from "../api/apiClient.ts";
 import {NamedApiResource} from "../types/Item.ts";
 import Title from "antd/es/typography/Title";
-import {PlusOutlined, SyncOutlined} from "@ant-design/icons";
+import {ExclamationCircleFilled, PlusOutlined, SyncOutlined} from "@ant-design/icons";
 import {ErrorAlert} from "./ErrorAlert.tsx";
 import {ApiError} from "../types/ApiError.ts";
+
+const {confirm} = Modal;
 
 type Props = {
   type: "categories" | "vendors";
@@ -39,6 +41,22 @@ export const CategoriesOrVendors = ({type}: Props) => {
       message.success('Successfully created!');
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => await ApiClient.delete(`api/${type}/${id}`),
+    onSuccess: (_, id) => {
+      const queryData = queryClient.getQueryData<NamedApiResource[]>([type]);
+      if (!!queryData) {
+        const indexToDelete = queryData.findIndex(item => item.id === id);
+        indexToDelete >= 0 && queryData.splice(indexToDelete, 1);
+        queryClient.setQueryData([type], queryData);
+      }
+      message.success('Successfully deleted!');
+      setEditInputIndex(-1);
+      setEditInputValue('');
+      editInputRef.current?.blur();
+    }
+  })
 
   const updateMutation = useMutation({
     mutationFn: async (payload: {
@@ -132,14 +150,28 @@ export const CategoriesOrVendors = ({type}: Props) => {
           {Array.isArray(data) && data.map((item, index) => {
             if (editInputIndex === index) {
               return (
-                <Input
-                  ref={editInputRef}
-                  key={item.id}
-                  value={editInputValue}
-                  onChange={handleEditInputChange}
-                  onBlur={handleEditInputCancel}
-                  onPressEnter={updateItem}
-                />
+                <Spin spinning={updateMutation.isLoading}>
+                  <Input
+                    ref={editInputRef}
+                    key={item.id}
+                    value={editInputValue}
+                    onChange={handleEditInputChange}
+                    onBlur={handleEditInputCancel}
+                    onPressEnter={updateItem}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Delete') {
+                        confirm({
+                          title: `Do you really want to delete this ${type === "categories" ? 'category' : 'vendor'}?`,
+                          icon: <ExclamationCircleFilled/>,
+                          content: 'All the related products will be deleted too.',
+                          onOk() {
+                            return deleteMutation.mutateAsync(item.id);
+                          },
+                        });
+                      }
+                    }}
+                  />
+                </Spin>
               );
             }
 

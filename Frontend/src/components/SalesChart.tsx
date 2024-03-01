@@ -1,18 +1,18 @@
-import { Badge, Card, Col, DatePicker, Row, Space, Spin, Table, TableProps } from 'antd';
-import { Column } from '@ant-design/charts';
-import { useQuery } from 'react-query';
-import { ApiClient } from '../api/apiClient.ts';
-import { USDollar } from '../pages/Products.tsx';
+import {Badge, Card, Col, DatePicker, Row, Space, Spin, Table, TableProps} from 'antd';
+import {Column} from '@ant-design/charts';
+import {useQuery} from 'react-query';
+import {ApiClient} from '../api/apiClient.ts';
+import {USDollar} from '../pages/Products.tsx';
 import dayjs from 'dayjs';
-import { useState } from 'react';
-import { MonthAmount, SalesChart as SalesChartType, TopSellingItem } from '../types/SalesChart.ts';
+import {useState} from 'react';
+import {MonthAmount, SalesChart as SalesChartType, TopSellingItem} from '../types/SalesChart.ts';
 
 const columns: TableProps<TopSellingItem>['columns'] = [
   {
     title: 'Rank',
     key: 'id',
     align: 'center',
-    render: (_, __, index) => [1, 2, 3].includes(index + 1) ? <Badge color="green" count={index + 1} /> : index + 1,
+    render: (_, __, index) => [1, 2, 3].includes(index + 1) ? <Badge color="green" count={index + 1}/> : index + 1,
   },
   {
     title: 'Name',
@@ -22,14 +22,14 @@ const columns: TableProps<TopSellingItem>['columns'] = [
   {
     title: 'Amount Sold',
     key: 'totalAmount',
-    render: (_, record) => <span style={{ color: 'green' }}>{USDollar.format(record.amountSold)}</span>,
+    render: (_, record) => <span style={{color: 'green'}}>{USDollar.format(record.amountSold)}</span>,
   },
 ];
 
 export const SalesChart = () => {
   const [tableHeight, setTableHeight] = useState(0);
   const [year, setYear] = useState<number>(new Date().getUTCFullYear());
-  const { data: salesChart, isLoading, isFetching } = useQuery({
+  const {data: salesChart, isLoading, isFetching} = useQuery({
     queryKey: ['monthly-sales', String(year)],
     queryFn: async () => await ApiClient.get<never, SalesChartType>(`api/Dashboard/monthly-sales?year=${year}`),
   });
@@ -42,10 +42,7 @@ export const SalesChart = () => {
       text: (d: MonthAmount) => USDollar.format(d.amount),
       textBaseline: 'bottom',
     },
-    style: {
-      radiusTopLeft: 10,
-      radiusTopRight: 10,
-    },
+    // shapeField: "column25D",
     maxBarHeight: '30px',
   };
 
@@ -74,7 +71,7 @@ export const SalesChart = () => {
         <Row gutter={[16, 16]}>
           <Col span={16}>
             {tableHeight && (
-              <div style={{ height: `${tableHeight}px` }}>
+              <div style={{height: `${tableHeight}px`}}>
                 <Column {...config} />
               </div>
             )}
