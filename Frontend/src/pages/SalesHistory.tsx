@@ -1,5 +1,5 @@
 import Title from 'antd/es/typography/Title';
-import {Button, Card, Descriptions, DescriptionsProps, Modal, Table, TableProps, Typography} from 'antd';
+import {Button, Card, Descriptions, DescriptionsProps, Modal, Table, TableProps, Tag, Typography} from 'antd';
 import {useQuery} from 'react-query';
 import {ApiClient} from '../api/apiClient.ts';
 import {Receipt} from '../types/ReceiptDto.ts';
@@ -58,6 +58,16 @@ const SalesHistory = () => {
         hour: '2-digit',
         minute: '2-digit',
       })}</p>,
+    },
+    {
+      title: "Conducted By",
+      key: "ConductedBy",
+      render: (_, record) => {
+        if (!record.appUser) return "-";
+        return (
+          <Tag color="blue">{record.appUser.userName}</Tag>
+        )
+      }
     },
     {
       title: 'Action',

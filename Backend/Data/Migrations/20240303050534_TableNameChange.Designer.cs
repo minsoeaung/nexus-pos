@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20240303050534_TableNameChange")]
+    partial class TableNameChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,7 +207,7 @@ namespace Backend.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Entities.Receipt", b =>
@@ -215,9 +218,6 @@ namespace Backend.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -226,11 +226,9 @@ namespace Backend.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
-
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Receipts");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Entities.ReceiptItem", b =>
@@ -259,7 +257,7 @@ namespace Backend.Data.Migrations
 
                     b.HasIndex("ReceiptId");
 
-                    b.ToTable("ReceiptItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Entities.Vendor", b =>
@@ -414,16 +412,9 @@ namespace Backend.Data.Migrations
 
             modelBuilder.Entity("Backend.Entities.Receipt", b =>
                 {
-                    b.HasOne("Backend.Entities.AppUser", "AppUser")
-                        .WithMany("Receipts")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Backend.Entities.Customer", "Customer")
                         .WithMany("Receipts")
                         .HasForeignKey("CustomerId");
-
-                    b.Navigation("AppUser");
 
                     b.Navigation("Customer");
                 });
@@ -498,8 +489,6 @@ namespace Backend.Data.Migrations
             modelBuilder.Entity("Backend.Entities.AppUser", b =>
                 {
                     b.Navigation("Items");
-
-                    b.Navigation("Receipts");
                 });
 
             modelBuilder.Entity("Backend.Entities.Customer", b =>

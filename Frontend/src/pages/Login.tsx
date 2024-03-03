@@ -56,7 +56,7 @@ export const Login = () => {
           name="username"
           rules={[{required: true, message: 'Please input your username!'}]}
         >
-          <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"/>
+          <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username" data-cy="username"/>
         </Form.Item>
         <Form.Item<FieldType>
           label="Password"
@@ -64,13 +64,14 @@ export const Login = () => {
           rules={[{required: true, message: 'Please input your password!'}]}
           style={{marginBottom: 0}}
         >
-          <Input type="password" prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Password"/>
+          <Input type="password" prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Password"
+                 data-cy="password"/>
         </Form.Item>
         <Form.Item style={{marginBottom: 12}}>
           <Link to="/forgot-password" style={{float: 'right'}}>Forgot password?</Link>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loginMutation.isLoading}>
+          <Button type="primary" htmlType="submit" block loading={loginMutation.isLoading} data-cy="login">
             Login
           </Button>
         </Form.Item>

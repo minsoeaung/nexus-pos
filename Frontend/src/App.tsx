@@ -18,8 +18,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// TODO: all list pagination
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

@@ -62,7 +62,7 @@ export const AppHeader = memo(() => {
       </Link>
       {user && (
         <Dropdown menu={{items}} trigger={['click']} arrow>
-          <a onClick={(e) => e.preventDefault()}>
+          <a onClick={(e) => e.preventDefault()} data-cy="accountname">
             <Space>
               <Typography style={{color: 'white'}}>Hello {user.userName}</Typography>
               <Typography><DownOutlined style={{color: 'white'}}/></Typography>

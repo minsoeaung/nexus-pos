@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@ant-design/charts": "^2.0.3",
@@ -26,12 +27,14 @@
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.17.19",
+    "@types/mocha": "^10.0.6",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/react-highlight-words": "^0.16.7",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "cypress": "^13.6.6",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

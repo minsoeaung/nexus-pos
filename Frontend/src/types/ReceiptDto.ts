@@ -1,10 +1,12 @@
-import { Item } from './Item.ts';
+import {Item} from './Item.ts';
+import {AppUser} from "./AppUser.ts";
 
 export type Receipt = {
   id: number;
   customer: Customer | null;
   createdAt: string;
   receiptItems: ReceiptItem[];
+  appUser: Omit<AppUser, "roles"> | null
 }
 
 export type Customer = {

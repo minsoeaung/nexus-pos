@@ -55,7 +55,7 @@ export const ItemModal = memo(({type, open, data, onSubmit, onCancel, loading, e
       onOk={handleModalOk}
       onCancel={onCancel}
       okText={type === 'create' ? 'Add' : 'Save changes'}
-      okButtonProps={{loading}}
+      okButtonProps={{loading, id: "modalOkButton"}}
     >
       <br/>
       <Form
@@ -76,9 +76,9 @@ export const ItemModal = memo(({type, open, data, onSubmit, onCancel, loading, e
           name="vendorId"
           rules={[{required: true, message: 'Please select vendor!'}]}
         >
-          <Select placeholder="Please select vendor">
-            {Array.isArray(vendors) && vendors.map(vendor => (
-              <Select.Option key={vendor.id} value={vendor.id}>{vendor.name}</Select.Option>
+          <Select placeholder="Please select vendor" data-cy="vendorId">
+            {Array.isArray(vendors) && vendors.map((vendor, index) => (
+              <Select.Option key={vendor.id} value={vendor.id} data-cy={"vendor" + index}>{vendor.name}</Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -88,9 +88,10 @@ export const ItemModal = memo(({type, open, data, onSubmit, onCancel, loading, e
           name="categoryId"
           rules={[{required: true, message: 'Please select category!'}]}
         >
-          <Select placeholder="Please select category">
-            {Array.isArray(categories) && categories.map(category => (
-              <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+          <Select placeholder="Please select category" data-cy="categoryId">
+            {Array.isArray(categories) && categories.map((category, index) => (
+              <Select.Option key={category.id} value={category.id}
+                             data-cy={"category" + index}>{category.name}</Select.Option>
             ))}
           </Select>
         </Form.Item>

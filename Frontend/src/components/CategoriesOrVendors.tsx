@@ -140,6 +140,7 @@ export const CategoriesOrVendors = ({type}: Props) => {
         {isFetching && <SyncOutlined spin/>}
       </Space>
       <br/>
+      <br/>
       {isLoading ? (
         <>
           <Skeleton active/>

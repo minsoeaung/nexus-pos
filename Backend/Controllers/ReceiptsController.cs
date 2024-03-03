@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend.Data;
 using Backend.Dtos;
 using Backend.Entities;
@@ -16,6 +17,7 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
     {
         return await storeContext
             .Receipts
+            .Include(r => r.AppUser)
             .Include(r => r.Customer)
             .Include(r => r.ReceiptItems)
             .ThenInclude(ri => ri.Item)
@@ -33,6 +35,7 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
     {
         var receipt = await storeContext
             .Receipts
+            .Include(r => r.AppUser)
             .Include(r => r.Customer)
             .Include(r => r.ReceiptItems)
             .ThenInclude(ri => ri.Item)
@@ -50,6 +53,13 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateReceipt(ReceiptRequest dto)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        int.TryParse(userId, out var validUserId);
+
+        if (validUserId == 0)
+            return Unauthorized();
+
         await using var transaction = await storeContext.Database.BeginTransactionAsync();
 
         try
@@ -122,7 +132,8 @@ public class ReceiptsController(StoreContext storeContext) : ControllerBase
             {
                 Customer = customer,
                 CreatedAt = DateTime.UtcNow,
-                ReceiptItems = receiptItems
+                ReceiptItems = receiptItems,
+                AppUserId = validUserId
             };
 
             await storeContext.Receipts.AddAsync(receipt);

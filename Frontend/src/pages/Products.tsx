@@ -173,23 +173,23 @@ const Products: FunctionComponent = () => {
         render: (_, record) => record.category.name,
       },
       {
-        title: 'Added by',
+        title: 'Added By',
         dataIndex: 'createdBy',
         key: 'createdBy',
         width: '15%',
         render: (_, record) => <Tag
-          color={record.createdBy.suspend ? 'error' : 'processing'}
+          color={record.createdBy.suspend ? 'error' : 'blue'}
           icon={record.createdBy.suspend ? <StopOutlined/> : null}>{record.createdBy.userName}</Tag>,
       },
       {
-        title: 'Create date',
+        title: 'Created Date',
         dataIndex: 'createdAt',
         key: 'createdAt',
         width: '15%',
         render: (createdAt) => new Date(createdAt).toLocaleDateString('en-GB'),
       },
       {
-        title: 'Options',
+        title: 'Actions',
         key: 'options',
         fixed: 'right',
         render: (_, record) => (
@@ -212,6 +212,7 @@ const Products: FunctionComponent = () => {
               }}
               icon={<EditOutlined/>}
               size="small"
+              data-cy="editProductBtn"
             >
               Edit
             </Button>
@@ -222,11 +223,13 @@ const Products: FunctionComponent = () => {
               }}
               okButtonProps={{
                 loading: deleteProductMutation.isLoading,
+                id: "deleteConfirmBtn"
               }}
               okText="Yes"
               cancelText="No"
             >
-              <Button danger type="link" icon={<DeleteOutlined/>} size="small">Delete</Button>
+              <Button danger type="link" icon={<DeleteOutlined/>} size="small"
+                      data-cy="deleteProductBtn">Delete</Button>
             </Popconfirm>
           </Space>
         ),
@@ -307,7 +310,7 @@ const Products: FunctionComponent = () => {
 
   return (
     <section>
-      <Title level={3}>Products</Title>
+      <Title level={3} data-cy="products">Products</Title>
       <br/>
       <Card
         headStyle={{
@@ -333,6 +336,7 @@ const Products: FunctionComponent = () => {
                   open: true,
                 });
               }}
+              data-cy="addproduct"
             >
               Add product
             </Button>

@@ -20,6 +20,11 @@ public class StoreContext(DbContextOptions options) : IdentityDbContext<AppUser,
             .WithOne(r => r.Item)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder.Entity<AppUser>()
+            .HasMany(i => i.Receipts)
+            .WithOne(r => r.AppUser)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.Entity<Category>()
             .HasIndex(u => u.Name)
             .IsUnique();
