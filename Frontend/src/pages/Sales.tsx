@@ -46,7 +46,7 @@ const Sales = () => {
 
   const queryClient = useQueryClient();
 
-  const timerRef = useRef(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const {data, isLoading, isFetching, refetch} = useQuery({
     queryKey: ['products', {selectedCategory, selectedVendor, searchTerm}],
