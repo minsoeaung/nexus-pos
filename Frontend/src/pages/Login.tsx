@@ -1,9 +1,11 @@
-import {Alert, Button, Form, Input} from 'antd';
+import {Alert, Button, Form, Input, Space, Typography} from 'antd';
 import {useMutation} from 'react-query';
 import {useAuth} from '../context/AuthContext.tsx';
 import {Link, useNavigate} from 'react-router-dom';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {LockOutlined, RocketTwoTone, UserOutlined} from '@ant-design/icons';
 import {ApiError} from '../types/ApiError.ts';
+
+const {Text} = Typography;
 
 type FieldType = {
   username: string;
@@ -47,6 +49,20 @@ export const Login = () => {
         boxShadow: '0 0 100px rgba(0, 0, 0, 0.08)',
       }}
     >
+      <div style={{textAlign: "center", marginBottom: "1.5rem"}}>
+        <Space>
+          <RocketTwoTone twoToneColor="rgb(24, 144, 255)" style={{fontSize: "2rem"}}/>
+          <Text style={{
+            fontSize: '1.5rem',
+            fontWeight: "bold",
+            color: "rgb(24, 144, 255)",
+            textAlign: "center",
+            textTransform: "uppercase"
+          }}>
+            Nexus
+          </Text>
+        </Space>
+      </div>
       <Form
         layout="vertical"
         onFinish={onFinish}

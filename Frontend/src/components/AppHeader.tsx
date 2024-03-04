@@ -2,7 +2,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {Dropdown, MenuProps, Space, Typography} from 'antd';
 import {Header} from 'antd/es/layout/layout';
 import {useAuth} from '../context/AuthContext.tsx';
-import {DownOutlined, KeyOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
+import {DownOutlined, KeyOutlined, LogoutOutlined, RocketTwoTone, UserOutlined} from '@ant-design/icons';
 import {useQueryClient} from 'react-query';
 import {memo} from 'react';
 
@@ -57,8 +57,8 @@ export const AppHeader = memo(() => {
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
-      <Link to="/" style={{fontSize: '1.5rem', color: "white"}}>
-        App name
+      <Link to="/" style={{fontSize: '1.5rem', color: "white", fontWeight: "bold"}}>
+        <RocketTwoTone twoToneColor="rgb(24, 144, 255)"/> Nexus
       </Link>
       {user && (
         <Dropdown menu={{items}} trigger={['click']} arrow>

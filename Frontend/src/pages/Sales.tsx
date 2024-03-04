@@ -7,7 +7,7 @@ import {
   Flex,
   List,
   message,
-  Result,
+  Modal,
   Row,
   Select,
   Spin,
@@ -40,7 +40,6 @@ const Sales = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedVendor, setSelectedVendor] = useState('');
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
-  const [success, setSuccess] = useState(false);
 
   const [form] = useForm<Customer>();
 
@@ -73,7 +72,9 @@ const Sales = () => {
       setSelectedProducts([]);
       form.resetFields();
       await queryClient.invalidateQueries(['customers']);
-      setSuccess(true);
+      Modal.success({
+        content: 'Order successfully processed!',
+      });
     },
   });
 
@@ -150,17 +151,17 @@ const Sales = () => {
     },
   ];
 
-  if (success) {
-    return (
-      <Result
-        status="success"
-        title="Successfully Processed Order!"
-        extra={[
-          <Button onClick={() => setSuccess(false)}>Order Again</Button>,
-        ]}
-      />
-    );
-  }
+  // if (success) {
+  //   return (
+  //     <Result
+  //       status="success"
+  //       title="Successfully Processed Order!"
+  //       extra={[
+  //         <Button onClick={() => setSuccess(false)}>Order Again</Button>,
+  //       ]}
+  //     />
+  //   );
+  // }
 
   return (
     <section>
@@ -202,6 +203,7 @@ const Sales = () => {
                               bordered
                               dataSource={Array.isArray(data?.results) ? data?.results : []}
                               rowKey={i => i.id}
+                              style={{maxHeight: '60vh', overflowY: "scroll"}}
                               renderItem={(item) => {
                                 const position = selectedProducts.findIndex(p => p.itemId === item.id);
 
