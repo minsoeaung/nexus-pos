@@ -37,7 +37,7 @@ export const RootLayout = () => {
   });
 
   useEffect(() => {
-    console.log("Hello");
+    console.log("Hello World");
   }, []);
   
   if (pathname === '/login') {
