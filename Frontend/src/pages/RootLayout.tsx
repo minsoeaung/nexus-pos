@@ -9,7 +9,7 @@ import {GlobalLoading} from '../components/GlobalLoading.tsx';
 import {ApiClient} from '../api/apiClient.ts';
 import {AppUser} from '../types/AppUser.ts';
 import {useQuery} from 'react-query';
-import {Suspense} from 'react';
+import { Suspense, useEffect } from 'react';
 import {Fallback} from '../components/Fallback.tsx';
 
 const {ErrorBoundary} = Alert;
@@ -36,6 +36,10 @@ export const RootLayout = () => {
     enabled: pathname !== '/login',
   });
 
+  useEffect(() => {
+    console.log("Hello World");
+  }, []);
+  
   if (pathname === '/login') {
     return (
       <Outlet/>
