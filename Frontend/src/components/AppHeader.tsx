@@ -58,7 +58,7 @@ export const AppHeader = memo(() => {
       }}
     >
       <Link to="/" style={{fontSize: '1.5rem', color: "white", fontWeight: "bold"}}>
-        <RocketTwoTone twoToneColor="rgb(24, 144, 255)"/> Nexus
+        <RocketTwoTone twoToneColor="rgb(24, 144, 255)"/> Hello Nexus
       </Link>
       {user && (
         <Dropdown menu={{items}} trigger={['click']} arrow>
