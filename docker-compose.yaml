@@ -1,0 +1,47 @@
+﻿version: "3"
+services:
+  nexus.backend:
+    depends_on:
+      - nexus.database
+    container_name: nexus.backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Database=Host=nexus.database;Port=5432;Database=nexus;Username=postgres;Password=postgres;
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+  nexus.frontend:
+    depends_on:
+      - nexus.backend
+    container_name: nexus.frontend
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+  nexus.database:
+    image: postgres:15
+    container_name: nexus.database
+    environment:
+      - POSTGRES_DB=nexus
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    depends_on:
+      - nexus.database
+    image: dpage/pgadmin4
+    container_name: nexus.pgadmin
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: myemail@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: pa55w0rd!
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+volumes:
+  pgdata:
+  pgadmindata:

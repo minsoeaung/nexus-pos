@@ -119,6 +119,7 @@ const Products: FunctionComponent = () => {
           const searchTerm = params.get('searchTerm') || '';
           if (!!searchTerm.trim()) {
             return (
+              // @ts-ignore
               <Highlighter
                 highlightStyle={{backgroundColor: '#ffc069', padding: 0}}
                 searchWords={[searchTerm]}

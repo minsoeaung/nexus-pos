@@ -45,7 +45,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddDbContext<StoreContext>(opt => opt.UseNpgsql(builder.Configuration["Psql:connectionString"]));
+builder.Services.AddDbContext<StoreContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+// builder.Services.AddDbContext<StoreContext>(opt => opt.UseInMemoryDatabase("db"));
 
 builder.Services.AddAuthorization();
 
@@ -72,24 +73,26 @@ builder.Services.AddIdentityApiEndpoints<AppUser>(options =>
 
 builder.Services.AddMappings();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseExceptionHandler("/error");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+Console.WriteLine(app.Environment.IsDevelopment() ? "--> Development" : "--> Production");
+Console.WriteLine($"--> {builder.Configuration.GetConnectionString("Database")}");
 
-    app.UseCors(options =>
-    {
-        options
-            .WithOrigins("https://localhost:3000", "http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors(options =>
+{
+    options
+        .WithOrigins("https://localhost:3000", "http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+});
 
 // For react spa build
 app.UseStaticFiles();
@@ -108,5 +111,7 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.CreateDbIfNotExistsAndSeed();
+
+app.MapHealthChecks("/health");
 
 app.Run();

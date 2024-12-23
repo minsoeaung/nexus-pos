@@ -75,10 +75,10 @@ Nexus is a Point of Sale (POS) system built with C# and modern web technologies 
 #### Step - 2: App Settings
 
 - Create a PostgreSQL database for the application.
-  - And update the "connectionString" value in Backend/appsettings.json with your database connection details or set it
+  - And update the "ConnectionStrings__Database" value in Backend/appsettings.json with your database connection details or set it
     through ***dotnet user secrets***
     - In Backend folder,
-        - `dotnet user-secrets set "Psql:connectionString" "Host=localhost;Port=5432;Database=<database_name>;User Id=<username>;Password=<password>;Include Error Detail=true"`
+        - `dotnet user-secrets set "ConnectionStrings_Database" "Host=localhost;Port=5432;Database=<database_name>;User Id=<username>;Password=<password>;Include Error Detail=true"`
 - Create or use existing gmail account for the app to be able to send email
     - Update "Mail", "DisplayName", and "Password" in Backend/appsettings.json
 
